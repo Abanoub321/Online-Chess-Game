@@ -1,5 +1,6 @@
 import color from "./ColorEnum";
-import Piece from "./Piece";
+import Pawn from "./Pieces/Pawn";
+import Piece from "./Pieces/Piece";
 import types from "./TypeEnum";
 
 export default class Board {
@@ -12,7 +13,7 @@ export default class Board {
     initializePieces() {
         this.pieces = new Array();
         for (let i = 0; i < 16; i++) {
-            this.pieces.push(new Piece(types.pawn, (i % 2 == 0) ? color.white : color.black))
+            this.pieces.push(new Pawn((i % 2 == 0) ? color.white : color.black))
         }
 
         for (let i = 0; i < 4; i++) {
