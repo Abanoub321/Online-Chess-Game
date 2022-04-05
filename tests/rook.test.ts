@@ -58,6 +58,25 @@ describe('Rook', () => {
         ]);
     });
 
+    it('can kill', () => {
+        const rook = new Rook('white');
+        rook.row = 2;
+        rook.column = 'A';
+        const pieces = [
+            new Rook('black'),
+            new Rook('black'),
+        ];
+        pieces[0].row = 5;
+        pieces[0].column = 'A';
+
+        pieces[1].row = 1;
+        pieces[1].column = 'A';
+
+        rook.move('A1', pieces);
+        expect(rook.row).toBe(1);
+        expect(rook.column).toBe('A');
+    });
+    
     it('can\'t kill behind enemies', () => {
         const rook = new Rook('white');
         rook.row = 2;

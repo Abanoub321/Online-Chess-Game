@@ -44,7 +44,7 @@ export default class Rook extends Piece {
     move(position: string, pieces: Piece[]): void {
         const row = parseInt(position[1]);
         const column = position.charAt(0);
-        if (this.isValidMove(this.getMoves(pieces), position)) {
+        if (this.isValidMove(this.getMoves(pieces), position) || this.isValidMove(this.getKillMoves(pieces), position)) {
             this.hasMoved = true;
             this.row = row;
             this.column = column;
