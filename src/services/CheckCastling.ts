@@ -4,17 +4,31 @@ import Piece from "../Pieces/Piece";
 
 const isCastlingAvailable = (pieces: Piece[], castlingPiece: Piece | any): boolean => {
     pieces = pieces.map(piece => Object.assign(Object.create(Object.getPrototypeOf(piece)), piece));
-    const king: King | any = pieces.find((piece: Piece) => piece.type === 'king' && piece.color === piece.color);
+    const king: King | any = pieces.find((piece: Piece) => piece.type === 'king' && piece.color === castlingPiece.color);
     if (!king)
         return false;
     if (king.hasMoved || castlingPiece.hasMoved)
         return false;
+
+    let alliesLocation: { [key: string]: boolean } = {};
+    pieces.forEach((piece: Piece) => {
+        if (piece.color === castlingPiece.color) {
+            alliesLocation[piece.column + piece.row] = true;
+        }
+    });
+
+
 
     let locations: { [key: string]: boolean } = {};
 
     let pieceIndex = pieces.findIndex((piece: Piece) => piece.column === castlingPiece.column && piece.row === castlingPiece.row);
 
     if (castlingPiece.column == 'A') {
+
+
+        if (alliesLocation[`B${castlingPiece.row}`] || alliesLocation[`C${castlingPiece.row}`] || alliesLocation[`D${castlingPiece.row}`])
+            return false;
+
         pieces[pieceIndex].column = 'B';
         getEnemisKillMoves(pieces, locations, castlingPiece.color);
         pieces[pieceIndex].column = 'C';
@@ -34,6 +48,10 @@ const isCastlingAvailable = (pieces: Piece[], castlingPiece: Piece | any): boole
         }
     }
     if (castlingPiece.column == 'H') {
+
+        if (alliesLocation[`F${castlingPiece.row}`] || alliesLocation[`G${castlingPiece.row}`])
+            return false;
+
         pieces[pieceIndex].column = 'F';
         getEnemisKillMoves(pieces, locations, castlingPiece.color);
         pieces[pieceIndex].column = 'G';

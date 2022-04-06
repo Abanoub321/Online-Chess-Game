@@ -1,3 +1,4 @@
+import { isCastlingAvailable } from "../services/CheckCastling";
 import Piece from "./Piece";
 
 
@@ -38,16 +39,38 @@ export default class King extends Piece {
         let index = pieces.findIndex(piece => piece.column == this.column && piece.row == this.row);
         // copy of array
         let newPieces = pieces.map(piece => Object.assign(Object.create(Object.getPrototypeOf(piece)), piece));
+
+        // check for castling
+        if (!this.hasMoved) {
+            let rook1 = pieces.find(piece => piece.column == 'H' && piece.row == this.row && piece.type == 'rook' && this.color == piece.color);
+            let rook2 = pieces.find(piece => piece.column == 'A' && piece.row == this.row && piece.type == 'rook' && this.color == piece.color);
+            if (rook1 && isCastlingAvailable(pieces, rook1)) {
+                moves.push('G' + this.row);
+            }
+            if (rook2 && isCastlingAvailable(pieces, rook2)) {
+                moves.push('C' + this.row);
+            }
+        }
+
         moves = moves.filter((move) => {
             return !this.isThreatened(move, newPieces, index)
         });
 
         return moves;
     }
+
     move(position: string, pieces: Piece[]): void {
         let row = parseInt(position.charAt(1));
         let column = position.charAt(0);
         if (this.isValidMove(this.getMoves(pieces), position)) {
+            if (column == 'G') {
+                let rook = pieces.find(piece => piece.column == 'H' && piece.row == this.row && piece.type == 'rook' && this.color == piece.color);
+                rook!.column = 'F';
+            }
+            else if(column == 'C') {
+                let rook = pieces.find(piece =>  piece.column == 'A' && piece.row == this.row && piece.type == 'rook' && this.color == piece.color);
+                rook!.column = 'D';
+            }
             this.row = row;
             this.column = column;
             this.hasMoved = true;
@@ -56,6 +79,7 @@ export default class King extends Piece {
             throw new Error(`Invalid move for ${this.color} king`);
         }
     }
+
     isValidMove(moves: string[], position: string): boolean {
         return moves.find(move => move === position) ? true : false
     }
@@ -64,7 +88,7 @@ export default class King extends Piece {
         pieces[index].row = parseInt(move.charAt(1));
         pieces[index].column = move.charAt(0);
         for (let i = 0; i < pieces.length; i++) {
-            if (i === index)
+            if (i === index || pieces[i].color === this.color)
                 continue;
             let pieceMoves = pieces[i].getKillMoves(pieces);
             if (pieceMoves.find(pieceMove => move === pieceMove)) {
@@ -96,7 +120,7 @@ export default class King extends Piece {
         moves = moves.filter((move) => {
             return !this.isThreatened(move, newPieces, index)
         });
-        
+
 
         return moves;
     }
