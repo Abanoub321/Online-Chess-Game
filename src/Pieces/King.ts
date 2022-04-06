@@ -3,8 +3,10 @@ import Piece from "./Piece";
 
 export default class King extends Piece {
     patterns: { row: number, column: number }[];
+    hasMoved: boolean;
     constructor(color: string, column: string, row: number) {
         super('king', color, column, row);
+        this.hasMoved = false;
         this.patterns = [
             { row: -1, column: 0 },
             { row: -1, column: -1 },
@@ -48,6 +50,7 @@ export default class King extends Piece {
         if (this.isValidMove(this.getMoves(pieces), position)) {
             this.row = row;
             this.column = column;
+            this.hasMoved = true;
         }
         else {
             throw new Error(`Invalid move for ${this.color} king`);

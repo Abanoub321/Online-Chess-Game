@@ -101,24 +101,6 @@ describe('Rook', () => {
         ]);
     });
 
-    it.skip('castling should be available', () => {
-        const rook = new Rook('white', 'H', 1);
-
-
-        const pieces = [
-            new Rook('white', 'H', 2),
-            new King('white', 'E', 1)
-        ]
-        pieces[0].row = 2;
-        pieces[0].column = 'H';
-
-        pieces[1].row = 1;
-        pieces[1].column = 'E';
-
-        expect(rook.getMoves([])).toEqual([
-        ]);
-    });
-
     it('can\'t castle', () => {
         const rook = new Rook('white', 'A', 1);
         rook.move('C1', []);

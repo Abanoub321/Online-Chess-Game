@@ -1,3 +1,5 @@
+import { isCastlingAvailable } from '../services/CheckCastling';
+import King from './King';
 import Piece from './Piece';
 
 export default class Rook extends Piece {
@@ -38,6 +40,12 @@ export default class Rook extends Piece {
             moves.push(`${String.fromCharCode(i)}${row}`);
         }
 
+
+
+
+        if (isCastlingAvailable(pieces,this)) {
+            moves.push(`E${this.row}`);
+        }
         return moves;
     }
 
@@ -45,9 +53,26 @@ export default class Rook extends Piece {
         const row = parseInt(position[1]);
         const column = position.charAt(0);
         if (this.isValidMove(this.getMoves(pieces), position) || this.isValidMove(this.getKillMoves(pieces), position)) {
+            if (
+                column == 'E' &&
+                isCastlingAvailable(pieces, this)
+            ) {
+                const king: King | any = pieces.find((piece: Piece) => piece.type === 'king' && piece.color === this.color);
+                if (this.column == 'H') {
+                    this.column = 'F'
+                    king.column = 'G'
+                } else {
+                    this.column = 'D';
+                    king.column = 'C';
+                }
+                king.hasMoved = true;
+            } else {
+
+                this.hasMoved = true;
+                this.row = row;
+                this.column = column;
+            }
             this.hasMoved = true;
-            this.row = row;
-            this.column = column;
         } else
             throw new Error('Invalid position');
 
@@ -95,3 +120,4 @@ export default class Rook extends Piece {
         return moves;
     }
 }
+
