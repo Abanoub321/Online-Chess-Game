@@ -1,11 +1,9 @@
-import Piece from '../src/Pieces/Piece';
+import King from '../src/Pieces/King';
 import Rook from '../src/Pieces/Rook';
 
 describe('Rook', () => {
     it('has right moves', () => {
-        const rook = new Rook('white');
-        rook.row = 1;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 1);
         expect(rook.getMoves([])).toEqual([
             'A2',
             'A3',
@@ -24,33 +22,22 @@ describe('Rook', () => {
         ]);
     });
     it('moves', () => {
-        const rook = new Rook('white');
-        rook.row = 1;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 1);
         rook.move('A2', []);
         expect(rook.row).toBe(2);
         expect(rook.column).toBe('A');
     });
 
     it('shouldn\'t have invalid moves', () => {
-        const rook = new Rook('white');
-        rook.row = 1;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 1);
         expect(() => rook.move('C5', [])).toThrow();
     });
     it('has kill moves', () => {
-        const rook = new Rook('white');
-        rook.row = 2;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 2);
         const pieces = [
-            new Rook('black'),
-            new Rook('black'),
+            new Rook('black', 'A', 5),
+            new Rook('black', 'A', 1),
         ];
-        pieces[0].row = 5;
-        pieces[0].column = 'A';
-
-        pieces[1].row = 1;
-        pieces[1].column = 'A';
 
         expect(rook.getKillMoves(pieces)).toEqual([
             'A1',
@@ -59,77 +46,48 @@ describe('Rook', () => {
     });
 
     it('can kill', () => {
-        const rook = new Rook('white');
-        rook.row = 2;
-        rook.column = 'A';
-        const pieces = [
-            new Rook('black'),
-            new Rook('black'),
-        ];
-        pieces[0].row = 5;
-        pieces[0].column = 'A';
+        const rook = new Rook('white', 'A', 2);
 
-        pieces[1].row = 1;
-        pieces[1].column = 'A';
+        const pieces = [
+            new Rook('black', 'A', 5),
+            new Rook('black', 'A', 1),
+        ];
 
         rook.move('A1', pieces);
         expect(rook.row).toBe(1);
         expect(rook.column).toBe('A');
     });
-    
+
     it('can\'t kill behind enemies', () => {
-        const rook = new Rook('white');
-        rook.row = 2;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 2);
+
 
         const pieces = [
-            new Rook('black'),
-            new Rook('black'),
+            new Rook('black', 'A', 5),
+            new Rook('black', 'A', 6),
         ];
-
-        pieces[0].row = 5;
-        pieces[0].column = 'A';
-
-        pieces[1].row = 6;
-        pieces[1].column = 'A';
 
         expect(rook.getKillMoves(pieces)).toEqual(['A5']);
     });
 
     it('can\'t kill allies', () => {
-        const rook = new Rook('white');
-        rook.row = 2;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 2);
 
         const pieces = [
-            new Rook('white'),
-            new Rook('white'),
+            new Rook('white', 'A', 5),
+            new Rook('white', 'A', 6),
         ];
-
-        pieces[0].row = 5;
-        pieces[0].column = 'A';
-
-        pieces[1].row = 6;
-        pieces[1].column = 'A';
 
         expect(rook.getKillMoves(pieces)).toEqual([]);
     });
-    
+
     it('shouldn\'t jump over pieces', () => {
-        const rook = new Rook('white');
-        rook.row = 1;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 1);
 
         const pieces = [
-            new Rook('white'),
-            new Rook('white'),
+            new Rook('white', 'A', 5),
+            new Rook('white', 'A', 3),
         ];
-
-        pieces[0].row = 5;
-        pieces[0].column = 'A';
-
-        pieces[1].row = 3;
-        pieces[1].column = 'A';
 
         expect(rook.getMoves(pieces)).toEqual([
             'A2',
@@ -144,13 +102,12 @@ describe('Rook', () => {
     });
 
     it.skip('castling should be available', () => {
-        const rook = new Rook('white');
-        rook.row = 1;
-        rook.column = 'H';
-        
+        const rook = new Rook('white', 'H', 1);
+
+
         const pieces = [
-            new Rook('white'),
-            new Piece('king', 'white')
+            new Rook('white', 'H', 2),
+            new King('white', 'E', 1)
         ]
         pieces[0].row = 2;
         pieces[0].column = 'H';
@@ -161,11 +118,9 @@ describe('Rook', () => {
         expect(rook.getMoves([])).toEqual([
         ]);
     });
-    
+
     it('can\'t castle', () => {
-        const rook = new Rook('white');
-        rook.row = 1;
-        rook.column = 'A';
+        const rook = new Rook('white', 'A', 1);
         rook.move('C1', []);
         expect(rook.row).toBe(1);
         expect(rook.column).toBe('C');

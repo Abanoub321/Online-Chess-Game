@@ -3,15 +3,15 @@ import Piece from './Piece';
 
 export default class Bishop extends Piece {
 
-    constructor(color: string) {
-        super('Bishop', color);
+    constructor(color: string, column: string, row: number) {
+        super('Bishop', color, column, row);
     }
     getMoves(pieces: Piece[]): string[] {
 
         let moves: string[] = [];
         let row = this.row;
         let column = this.column;
-        let left, right;
+        let left: number, right: number;
         left = column.charCodeAt(0) - 1;
         right = column.charCodeAt(0) + 1;
         for (let i = row - 1; i >= 1; i--) {
@@ -75,10 +75,10 @@ export default class Bishop extends Piece {
         let moves: string[] = [];
         let row = this.row;
         let column = this.column;
-        let left, right;
+        let left: number, right: number;
         left = column.charCodeAt(0) - 1;
         right = column.charCodeAt(0) + 1;
-   
+
         for (let i = row - 1; i >= 1; i--) {
             if (left >= 65) {
                 if (pieces.find(piece => piece.row === i && piece.column === String.fromCharCode(left) && piece.color !== this.color))

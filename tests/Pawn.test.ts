@@ -1,116 +1,95 @@
 import Pawn from "../src/Pieces/Pawn";
 import Board from "../src/Board";
+import Piece from "../src/Pieces/Piece";
 
 
 describe('Pawn', () => {
-    let pieces;
-    beforeEach(() => {
-        pieces = new Board().getPieces();
-    });
-
     test('White Pawn has right moves', () => {
-        const pawn = new Pawn('white');
-        pawn.row = 2;
-        pawn.column = 'A';
-        expect(pawn.getMoves(pieces)).toEqual([
+        const pawn = new Pawn('white', 'A', 2);
+
+        expect(pawn.getMoves([])).toEqual([
             'A3',
             'A4'
         ]);
     });
     test('Black Pawn has right moves', () => {
-        const pawn = new Pawn('black');
-        pawn.row = 7;
-        pawn.column = 'A';
-        expect(pawn.getMoves(pieces)).toEqual([
+        const pawn = new Pawn('black', 'A', 7);
+
+        expect(pawn.getMoves([])).toEqual([
             'A6',
             'A5'
         ]);
     });
     test('Pawn move', () => {
-        const pawn = new Pawn('white');
-        pawn.row = 2;
-        pawn.column = 'A';
-        pawn.move('A3', pieces);
+        const pawn = new Pawn('white', 'A', 2);
+
+        pawn.move('A3', []);
         expect(pawn.row).toBe(3);
     });
     test('Pawn invalid move', () => {
-        const pawn = new Pawn('white');
-        pawn.row = 2;
-        pawn.column = 'A';
-        expect(() => pawn.move('A5', pieces)).toThrow();
+        const pawn = new Pawn('white', 'A', 2);
+
+        expect(() => pawn.move('A5', [])).toThrow();
     });
 
     test('Pawn second Move', () => {
-        const pawn = new Pawn('white');
-        pawn.row = 2;
-        pawn.column = 'A';
+        const pawn = new Pawn('white', 'A', 2);
 
-
-        expect(pawn.getMoves(pieces)).toEqual([
+        expect(pawn.getMoves([])).toEqual([
             'A3',
             'A4'
         ]);
     });
     test('Pawn Promotes', () => {
-        const pawn = new Pawn('white');
-        pawn.row = 7;
-        pawn.column = 'A';
+        const pawn = new Pawn('white', 'A', 7);
         pawn.firstMove = false;
-        pieces = pieces.filter(piece => piece.row !== 8 || piece.column !== 'A');
-        pawn.move('A8', pieces);
+
+        pawn.move('A8', []);
         expect(pawn.canBePromoted).toBe(true);
     });
 
     test('Pawn white has kill moves', () => {
 
-        const pawn = pieces.find(piece =>
-            piece.color === 'white' && piece.type === 'pawn' && piece.row === 2 && piece.column === 'E'
-        );
-        pawn.move('E4', pieces);
-        const pawn2 = pieces.find(piece =>
-            piece.color === 'black' && piece.type === 'pawn' && piece.row === 7 && piece.column === 'D'
-        );
-        pawn2.move('D5', pieces);
+        const pawn = new Pawn('white', 'E', 2);
 
-        expect(pawn.getKillMoves(pieces)).toEqual([
+        pawn.move('E4', []);
+        const pawn2 = new Pawn('black', 'D', 7);
+
+        pawn2.move('D5', [pawn]);
+
+        expect(pawn.getKillMoves([pawn2])).toEqual([
             'D5'
         ]);
     });
     test('Pawn black has kill moves', () => {
-        const pawn: Pawn = pieces.find(piece =>
-            piece.color === 'black' && piece.type === 'pawn' && piece.row === 7 && piece.column === 'E'
-        );
-        pawn.move('E5', pieces);
-        const pawn2: Pawn = pieces.find(piece =>
-            piece.color === 'white' && piece.type === 'pawn' && piece.row === 2 && piece.column === 'D'
-        );
-        pawn2.move('D4', pieces);
-        expect(pawn.getKillMoves(pieces)).toEqual([
+        const pawn = new Pawn('black', 'E', 7);
+
+        pawn.move('E5', []);
+        const pawn2 = new Pawn('white', 'D', 2);
+
+        pawn2.move('D4', []);
+        expect(pawn.getKillMoves([pawn2])).toEqual([
             'D4'
         ]);
     });
     test('Piece in front of pawn', () => {
-        const pawn1: Pawn = pieces.find(piece =>
-            piece.color === 'white' && piece.type === 'pawn' && piece.row === 2 && piece.column === 'E'
-        );
-        pawn1.move('E4', pieces);
-        const pawn2: Pawn = pieces.find(piece =>
-            piece.color === 'black' && piece.type === 'pawn' && piece.row === 7 && piece.column === 'E'
-        );
-        pawn2.move('E5', pieces);
+        const pawn1: Pawn = new Pawn('white', 'E', 2);
 
-        expect(pawn1.getMoves(pieces)).toEqual([]);
+        pawn1.move('E4', []);
+        const pawn2: Pawn = new Pawn('black', 'E', 7);
+
+        pawn2.move('E5', []);
+
+        expect(pawn1.getMoves([pawn2])).toEqual([]);
     });
     test('Pawn Kills Move', () => {
-        const pawn: Pawn = pieces.find(piece =>
-            piece.color === 'white' && piece.type === 'pawn' && piece.row === 2 && piece.column === 'E'
-        );
-        pawn.move('E4', pieces);
-        const pawn2: Pawn = pieces.find(piece =>
-            piece.color === 'black' && piece.type === 'pawn' && piece.row === 7 && piece.column === 'D'
-        );
-        pawn2.move('D5', pieces);
-        pawn.move('D5', pieces)
+        const pawn: Pawn = new Pawn('white', 'E', 2);
+
+        pawn.move('E4', []);
+        const pawn2: Pawn = new Pawn('black', 'D', 7);
+
+        pawn2.move('D5', [pawn, pawn2]);
+        pawn.move('D5', [pawn, pawn2])
         expect(pawn.column).toBe('D');
         expect(pawn.row).toBe(5);
     });

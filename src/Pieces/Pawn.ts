@@ -4,8 +4,8 @@ export default class Pawn extends Piece {
     firstMove: boolean = true;
     canBePromoted: boolean = false;
 
-    constructor(color: string = 'white') {
-        super('pawn', color);
+    constructor(color: string = 'white', column: string, row: number) {
+        super('pawn', color, column, row);
     }
 
     getMoves(pieces: Piece[]): string[] {
@@ -49,8 +49,8 @@ export default class Pawn extends Piece {
         }
     }
 
-    getKillMoves(pieces: Piece[]) {
-        let moves = [];
+    getKillMoves(pieces: Piece[]): string[] {
+        let moves: string[] = [];
         let validPieces;
         if (this.color === 'white') {
             let killMoves = [

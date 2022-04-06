@@ -2,8 +2,8 @@ import Piece from './Piece';
 
 export default class Knight extends Piece {
     patterns: { row: number, column: number }[];
-    constructor(color: string) {
-        super('Knight', color);
+    constructor(color: string, column: string, row: number) {
+        super('Knight', color, column, row);
         this.patterns = [
             { row: 1, column: -2 },
             { row: -1, column: -2 },

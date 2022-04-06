@@ -3,8 +3,8 @@ import Piece from './Piece';
 export default class Rook extends Piece {
     hasMoved: boolean;
 
-    constructor(color: string) {
-        super('rook', color);
+    constructor(color: string, column: string, row: number) {
+        super('rook', color, column, row);
         this.hasMoved = false;
     }
 
