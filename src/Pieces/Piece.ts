@@ -1,24 +1,19 @@
 
-export default class Piece {
+export default abstract class Piece {
     type: string;
     color: string;
     row: number;
     column: string;
-    constructor(type: string, color: string = 'white') {
+    constructor(type: string, color: string = 'white', column: string, row: number) {
         this.type = type;
         this.color = color;
+        this.row = row;
+        this.column = column;
     }
-    getMoves(pieces: Piece[]): string[] {
-        throw new Error('Method not implemented.');
-    }
-    move(position: string, pieces: Piece[]): void {
-        throw new Error('Method not implemented.');   
-    }
-    getKillMoves(pieces: Piece[]): string[] {
-        throw new Error('Method not implemented.');
-    }
-    isValidMove(moves: string[], position: string): boolean {
-        throw new Error('Method not implemented.');
-    }
-    
+    abstract getMoves(pieces: Piece[]): string[];
+    abstract move(position: string, pieces: Piece[]): void;
+    abstract getKillMoves(pieces: Piece[]): string[];
+    abstract isValidMove(moves: string[], position: string): boolean;
+
+
 }
