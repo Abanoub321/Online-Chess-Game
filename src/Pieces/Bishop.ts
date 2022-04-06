@@ -4,7 +4,7 @@ import Piece from './Piece';
 export default class Bishop extends Piece {
 
     constructor(color: string, column: string, row: number) {
-        super('Bishop', color, column, row);
+        super('bishop', color, column, row);
     }
     getMoves(pieces: Piece[]): string[] {
 

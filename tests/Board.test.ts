@@ -38,15 +38,15 @@ describe('Board-testing', () => {
 
 
     describe('Board pieces in right locations', () => {
-        let board;
-        let locations;
+        let board: Board;
+        let locations: { [key: string]: number };
         beforeAll(() => {
             board = new Board();
         })
         beforeEach(() => {
             locations = {};
         });
-        
+
         test('Pawns', () => {
             let pawns = board.getPieces().filter(piece => piece.type === 'pawn');
             for (let i = 0; i < 8; i++) {
@@ -68,11 +68,11 @@ describe('Board-testing', () => {
         test('Rooks', () => {
             let rooks = board.getPieces().filter(piece => piece.type === 'rook');
 
-            let rows = {
+            let rows: { [key: number]: number } = {
                 1: 0,
                 8: 0
             };
-            
+
             locations = {
                 'A': 0,
                 'H': 0,
@@ -93,7 +93,7 @@ describe('Board-testing', () => {
 
         test('Knights', () => {
             let knights = board.getPieces().filter(piece => piece.type === 'knight');
-            let rows = {
+            let rows: { [key: number]: number } = {
                 1: 0,
                 8: 0
             };
@@ -117,7 +117,7 @@ describe('Board-testing', () => {
 
         test('Bishops', () => {
             let bishops = board.getPieces().filter(piece => piece.type === 'bishop');
-            let rows = {
+            let rows: { [key: number]: number } = {
                 1: 0,
                 8: 0
             };
@@ -142,11 +142,9 @@ describe('Board-testing', () => {
         test('Queens', () => {
             let queens = board.getPieces().filter(piece => piece.type === 'queen');
             queens.forEach((queen) => {
-                if(queen.color === 'white') 
-                {
+                if (queen.color === 'white') {
                     expect(queen.row).toBe(1);
-                }else
-                {
+                } else {
                     expect(queen.row).toBe(8);
                 }
                 expect(queen.column).toBe('D');
@@ -156,11 +154,9 @@ describe('Board-testing', () => {
         test('Kings', () => {
             let kings = board.getPieces().filter(piece => piece.type === 'king');
             kings.forEach((king) => {
-                if(king.color === 'white') 
-                {
+                if (king.color === 'white') {
                     expect(king.row).toBe(1);
-                }else
-                {
+                } else {
                     expect(king.row).toBe(8);
                 }
                 expect(king.column).toBe('E');
