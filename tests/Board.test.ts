@@ -1,14 +1,27 @@
 import Board from '../src/Board';
 
-describe('Board-testing', () => {
+describe('Board', () => {
+    let board: Board;
+    const matchTwoBoards = (b1: { type: string, color: string }[][] | any, b2: { type: string, color: string }[][] | any) => {
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if (b1[i][j] !== null) {
+                    expect(b1[i][j].type).toBe(b2[i][j].type);
+                    expect(b1[i][j].color).toBe(b2[i][j].color);
+                } else
+                    expect(null).toBe(b2[i][j]);
+            }
+        }
+    }
+    beforeEach(() => {
+        board = new Board();
+    });
     test('Board is initialized', () => {
-        let board = new Board();
         let pieces = board.getPieces();
         expect(pieces.length).toBe(32);
     });
 
     test('Board is initialized with right pieces', () => {
-        const board = new Board();
         const pieces = board.getPieces();
         let pawns = pieces.filter(piece => piece.type === 'pawn');
         let rook = pieces.filter(piece => piece.type == 'rook');
@@ -27,7 +40,6 @@ describe('Board-testing', () => {
 
 
     test('Board initialized with right colors', () => {
-        const board = new Board();
         const pieces = board.getPieces();
         let white = pieces.filter(piece => piece.color === 'white');
         let black = pieces.filter(piece => piece.color === 'black');
@@ -163,4 +175,133 @@ describe('Board-testing', () => {
             });
         });
     })
+
+
+    it('should return complete board', () => {
+        let expectedBoard = [
+            [{ type: 'rook', color: 'white' }, { type: 'knight', color: 'white' }, { type: 'bishop', color: 'white' }, { type: 'queen', color: 'white' }, { type: 'king', color: 'white' }, { type: 'bishop', color: 'white' }, { type: 'knight', color: 'white' }, { type: 'rook', color: 'white' }],
+            [{ type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [{ type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }],
+            [{ type: 'rook', color: 'black' }, { type: 'knight', color: 'black' }, { type: 'bishop', color: 'black' }, { type: 'queen', color: 'black' }, { type: 'king', color: 'black' }, { type: 'bishop', color: 'black' }, { type: 'knight', color: 'black' }, { type: 'rook', color: 'black' }],
+        ];
+        let completeBoard = board.getBoard();
+        matchTwoBoards(completeBoard, expectedBoard);
+    });
+
+    it('should return piece moves if white', () => {
+        let moves = board.getPieceMoves(1, 0);
+
+        expect(moves.sort()).toEqual([
+            {
+                row: 2,
+                column: 0
+            },
+            {
+                row: 3,
+                column: 0
+            }
+        ].sort())
+    })
+
+    it('should return piece moves if black', () => {
+        let moves = board.getPieceMoves(7, 1);
+
+        expect(moves.sort()).toEqual([
+            {
+                row: 5,
+                column: 0
+            },
+            {
+                row: 5,
+                column: 2
+            }
+        ].sort())
+    })
+    it('should return empty array if piece is blocked', () => {
+        let moves = board.getPieceMoves(0, 0);
+
+        expect(moves).toEqual([])
+    })
+    it('should moves piece', () => {
+        board.movePiece(1, 0, 2, 0);
+        let expectedBoard = [
+            [{ type: 'rook', color: 'white' }, { type: 'knight', color: 'white' }, { type: 'bishop', color: 'white' }, { type: 'queen', color: 'white' }, { type: 'king', color: 'white' }, { type: 'bishop', color: 'white' }, { type: 'knight', color: 'white' }, { type: 'rook', color: 'white' }],
+            [null, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }],
+            [{ type: 'pawn', color: 'white' }, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [{ type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }],
+            [{ type: 'rook', color: 'black' }, { type: 'knight', color: 'black' }, { type: 'bishop', color: 'black' }, { type: 'queen', color: 'black' }, { type: 'king', color: 'black' }, { type: 'bishop', color: 'black' }, { type: 'knight', color: 'black' }, { type: 'rook', color: 'black' }],
+        ];
+        let completeBoard = board.getBoard();
+        matchTwoBoards(completeBoard, expectedBoard);
+    })
+    it('should return not valid if not valid move', () => {
+        let move = board.movePiece(1, 0, 4, 0);
+        expect(move).toBe('Invalid move');
+    })
+    it('should return empty array if kill moves are not exists', () => {
+        let moves = board.getPieceAttackMoves(1, 0);
+        expect(moves).toEqual([])
+    })
+
+    it('should return kill moves if exists', () => {
+        board.movePiece(1, 4, 3, 4);
+        board.movePiece(6, 3, 4, 3);
+
+        let moves = board.getPieceAttackMoves(3, 4);
+        expect(moves.sort()).toEqual([
+            {
+                row: 4,
+                column: 3
+            }
+        ]);
+    })
+
+    it('should move to kill', () => {
+        board.movePiece(1, 4, 3, 4);
+        board.movePiece(6, 3, 4, 3);
+        board.movePiece(3, 4, 4, 3);
+
+        let expectedBoard = [
+            [{ type: 'rook', color: 'white' }, { type: 'knight', color: 'white' }, { type: 'bishop', color: 'white' }, { type: 'queen', color: 'white' }, { type: 'king', color: 'white' }, { type: 'bishop', color: 'white' }, { type: 'knight', color: 'white' }, { type: 'rook', color: 'white' }],
+            [{ type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, null, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }, { type: 'pawn', color: 'white' }],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, { type: 'pawn', color: 'white' }, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [{ type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, null, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }, { type: 'pawn', color: 'black' }],
+            [{ type: 'rook', color: 'black' }, { type: 'knight', color: 'black' }, { type: 'bishop', color: 'black' }, { type: 'queen', color: 'black' }, { type: 'king', color: 'black' }, { type: 'bishop', color: 'black' }, { type: 'knight', color: 'black' }, { type: 'rook', color: 'black' }],
+        ];
+        let completeBoard = board.getBoard();
+
+        matchTwoBoards(completeBoard, expectedBoard);
+    })
+
+    it('should check if lost', () => {
+        board.movePiece(1, 4, 3, 4);
+        board.movePiece(6, 3, 4, 3);
+        board.movePiece(3, 4, 4, 3);
+
+        expect(board.checkIfLost('black')).toBe(false);
+    })
+
+    it('should return false if lost', () => {
+        board.movePiece(1, 4, 3, 4);
+        board.movePiece(6, 1, 5, 1);
+        board.movePiece(0, 5, 3, 2);
+        board.movePiece(7, 1, 5, 0);
+        board.movePiece(0, 3, 2, 5);
+        board.movePiece(5, 0, 3, 1);
+        board.movePiece(2, 5, 6, 5);
+
+        expect(board.checkIfLost('black')).toBe(true);
+
+    })
+
 });
