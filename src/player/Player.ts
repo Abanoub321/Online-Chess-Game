@@ -2,9 +2,8 @@
 
 export default class Player {
     name: string;
-    color: string;
-    constructor(name: string, color: string) {
+    color: string | undefined;
+    constructor(name: string) {
         this.name = name;
-        this.color = color;
     }
 }
