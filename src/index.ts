@@ -21,32 +21,46 @@ io.on("connection", (socket) => {
 
     let joinedPlayer = new Player(socket.id);
     players[socket.id] = joinedPlayer;
-    
+
     socket.emit('gameList', games);
 
-    socket.on('create game', () => {
+    socket.on('create game', (cb: Function) => {
         try {
             players[socket.id].createNewGame();
             let game = players[socket.id].game;
             games[game!.id] = game!;
             socket.join(`room-${game!.id}`);
-            socket.emit('created game', {
+            cb({
+                status: "OK",
                 gameId: game!.id,
                 board: game!.board
             });
         } catch (error: Error | any) {
             console.log(error);
+            cb({
+                status: "NOT OK",
+                error: error.message
+            })
         }
     })
 
-    socket.on('join game', (gameId: string) => {
+    socket.on('join game', (gameId: string, cb: Function) => {
         try {
             let game = games[gameId];
             players[socket.id].joinGame(game!);
             socket.join(`room-${game?.id}`);
             socket.to(`room-${game?.id}`).emit('joined game', game?.board);
+            cb({
+                status: "OK",
+                gameId: game!.id,
+                board: game!.board
+            });
         } catch (error: Error | any) {
             console.log(error);
+            cb({
+                status: "NOT OK",
+                error: error.message
+            })
         }
     });
 
