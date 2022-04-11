@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 import Board from "../Board";
 import Player from "../player/Player";
 import GameStatus from "../GameStatusEnum";
@@ -5,6 +6,7 @@ import color from "../ColorEnum";
 
 export default class Game {
 
+    id: string;
     board: Board;
     player1: Player;
     player2: Player = null as any;
@@ -12,6 +14,7 @@ export default class Game {
     currentPlayer: Player | undefined;
 
     constructor(player: Player) {
+        this.id = uuid.v4();
         this.board = new Board();
         this.player1 = player;
         this.status = GameStatus.WAITING_FOR_PLAYERS;
