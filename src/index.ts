@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 const uuid = require("uuid");
 import Game from "./game/Game";
+import GameStatus from "./GameStatusEnum";
 import Player from "./player/Player";
 
 const io = new Server(5000, {
@@ -18,7 +19,7 @@ io.engine.generateId = (req: any) => {
 }
 
 io.on("connection", (socket) => {
-
+    console.log(socket.id)
     let joinedPlayer = new Player(socket.id);
     players[socket.id] = joinedPlayer;
 
@@ -63,5 +64,16 @@ io.on("connection", (socket) => {
             })
         }
     });
-
+    socket.on("disconnecting", (reason) => {
+        for (const room of socket.rooms) {
+            if (room !== socket.id) {
+                socket.to(room).emit("player left", socket.id);
+                if (games[room.split("-")[1]].status === GameStatus.STARTED) {
+                    let leftPlayer = players[socket.id];
+                    games[room.split("-")[1]].status = leftPlayer.color === 'white' ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+                }
+            }
+        }
+        delete players[socket.id];
+    });
 });
