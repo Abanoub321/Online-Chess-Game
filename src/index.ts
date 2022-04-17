@@ -23,9 +23,13 @@ io.on("connection", (socket) => {
     let joinedPlayer = new Player(socket.id);
     players[socket.id] = joinedPlayer;
 
-    socket.emit('gameList', games);
+    let availableGames = Object.keys(games).filter(gameId => {
+        return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
+    });
+    socket.to(socket.id).emit('gameList', availableGames);
 
     socket.on('create game', (cb: Function) => {
+        console.log('called create game');
         try {
             players[socket.id].createNewGame();
             let game = players[socket.id].game;
@@ -36,6 +40,10 @@ io.on("connection", (socket) => {
                 gameId: game!.id,
                 board: game!.board
             });
+            let availableGames = Object.keys(games).filter(gameId => {
+                return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
+            });
+            socket.emit('gameList', availableGames);
         } catch (error: Error | any) {
             console.log(error);
             cb({
@@ -46,6 +54,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on('join game', (gameId: string, cb: Function) => {
+        console.log('called join game');
         try {
             let game = games[gameId];
             players[socket.id].joinGame(game!);
@@ -56,6 +65,10 @@ io.on("connection", (socket) => {
                 gameId: game!.id,
                 board: game!.board
             });
+            let availableGames = Object.keys(games).filter(gameId => {
+                return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
+            });
+            socket.emit('gameList', availableGames);
         } catch (error: Error | any) {
             console.log(error);
             cb({
@@ -64,7 +77,8 @@ io.on("connection", (socket) => {
             })
         }
     });
-    socket.on("disconnecting", (reason) => {
+   /* socket.on("disconnecting", (reason) => {
+        console.log('called disconnecting game');
         for (const room of socket.rooms) {
             if (room !== socket.id) {
                 socket.to(room).emit("player left", socket.id);
@@ -75,5 +89,5 @@ io.on("connection", (socket) => {
             }
         }
         delete players[socket.id];
-    });
+    });*/
 });
