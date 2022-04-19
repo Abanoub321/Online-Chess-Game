@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
     socket.to(socket.id).emit('gameList', availableGames);
 
     socket.on('create game', (cb: Function) => {
-        console.log('called create game');
+
         try {
             players[socket.id].createNewGame();
             let game = players[socket.id].game;
@@ -54,7 +54,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on('join game', (gameId: string, cb: Function) => {
-        console.log('called join game');
+
         try {
             let game = games[gameId];
             players[socket.id].joinGame(game!);
@@ -77,17 +77,56 @@ io.on("connection", (socket) => {
             })
         }
     });
-   /* socket.on("disconnecting", (reason) => {
-        console.log('called disconnecting game');
+    socket.on('check-for-move', (gameId: string, playerId: string, move: { x: number, y: number }, cb) => {
+        let player = players[playerId];
+        let game = games[gameId];
+        const { x, y } = move;
+        try {
+            let availableMoves = game?.avialableMoves(player, x, y);
+            cb({
+                status: "OK",
+                availableMoves
+            })
+        } catch (error: Error | any) {
+            console.log(error.message);
+            cb({
+                status: "NOT OK",
+                error: error.message
+            })
+        }
+    })
+    socket.on('make-move', (gameId: string, playerId: string, oldMove: { x: number, y: number }, newMove: { x: number, y: number }, cb) => {
+        let player = players[playerId];
+        let game = games[gameId];
+
+        try {
+            game?.movePiece(player, oldMove.x, oldMove.y, newMove.x, newMove.y);
+            socket.to(`room-${game?.id}`).emit('move made', game?.board);
+            cb({
+                status: "OK",
+                board: game?.board
+            })
+        } catch (error: Error | any) {
+            console.log(error.message);
+            cb({
+                status: "NOT OK",
+                error: error.message
+            })
+        }
+    });
+    socket.on("disconnecting", (reason) => {
+
         for (const room of socket.rooms) {
             if (room !== socket.id) {
                 socket.to(room).emit("player left", socket.id);
-                if (games[room.split("-")[1]].status === GameStatus.STARTED) {
+
+                if (games[room.replace("room-", "")].status === GameStatus.STARTED) {
                     let leftPlayer = players[socket.id];
                     games[room.split("-")[1]].status = leftPlayer.color === 'white' ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+                    delete games[room];
                 }
             }
         }
         delete players[socket.id];
-    });*/
+    });
 });

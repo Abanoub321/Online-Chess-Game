@@ -63,4 +63,7 @@
     "client",
     "tests"
   ],
+  "include": [
+   "src" 
+  ]
 }
