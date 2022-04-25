@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     let availableGames = Object.keys(games).filter(gameId => {
         return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
     });
-    socket.to(socket.id).emit('gameList', availableGames);
+    socket.emit('gameList', availableGames);
 
     socket.on('create game', (cb: Function) => {
 
@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
             let availableGames = Object.keys(games).filter(gameId => {
                 return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
             });
-            socket.emit('gameList', availableGames);
+            socket.broadcast.emit('gameList', availableGames);
         } catch (error: Error | any) {
             console.log(error);
             cb({
@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
             let availableGames = Object.keys(games).filter(gameId => {
                 return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
             });
-            socket.emit('gameList', availableGames);
+            socket.broadcast.emit('gameList', availableGames);
         } catch (error: Error | any) {
             console.log(error);
             cb({
