@@ -23,11 +23,11 @@ export const GameBoard = (props: any) => {
 
                         return (
                             <Col key={colIndex} style={
-                               {
-                                   margin: '0px',
-                               }
+                                {
+                                    margin: '0px',
+                                }
                             }  >
-                                <Cell color={color} col={colIndex} row={rowIndex} />
+                                <Cell color={color} col={colIndex} row={rowIndex} cell={cell} />
                             </Col>
                         )
                     })

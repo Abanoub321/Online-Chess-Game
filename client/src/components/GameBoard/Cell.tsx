@@ -1,22 +1,28 @@
 
 import React from 'react';
-
+import Image from 'react-bootstrap/Image'
 export const Cell = (props: any) => {
-    const { color, row, col } = props;
+    const { color, row, col, cell } = props;
 
     return (
         <div style={{
+            display:'flex',
             backgroundColor: color,
             width: '75px',
             height: '75px',
             border: '1px solid black',
-            margin: '0px'
+            margin: '0px',
+            justifyContent: 'center',
+
         }}
             onClick={() => {
-                alert(`${row} + ${col}`);
+               
             }}
         >
-
+            {
+                cell == null ? null :
+                    <Image src={require(`../../assets/${cell.type}_${cell.color}.png`)} fluid />
+            }
         </div>
     );
 };
