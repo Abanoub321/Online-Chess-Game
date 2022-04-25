@@ -16,7 +16,7 @@ export const Cell = (props: any) => {
 
         }}
             onClick={() => {
-               
+               alert(row + ' ' + col)
             }}
         >
             {

@@ -13,21 +13,19 @@ export const GameBoard = (props: any) => {
         assignPieces(turnIntoBoard());
     }, [])
     const buildBoard = () => {
-        console.log(gameBoard);
-        let color = 'black';
         return gameBoard.map((row: any, rowIndex: number) => {
             return (
-                <Row key={rowIndex} className='gx-0'>
+                <Row key={rowIndex} className='gx-0' >
                     {row.map((cell: any, colIndex: number) => {
-                        color = color === 'black' ? 'white' : 'black';
-
+                        console.log(colIndex);
                         return (
                             <Col key={colIndex} style={
                                 {
                                     margin: '0px',
                                 }
-                            }  >
-                                <Cell color={color} col={colIndex} row={rowIndex} cell={cell} />
+                            }  
+                            >
+                                <Cell color={(rowIndex+colIndex)%2==0?'white':'grey'} col={(colIndex-8)*-1} row={(rowIndex-8)*-1} cell={cell} />
                             </Col>
                         )
                     })
@@ -56,6 +54,7 @@ export const GameBoard = (props: any) => {
             newGameBoard[row][col] = piece;
 
         });
+        newGameBoard.reverse();
         setGameBoard(newGameBoard);
     }
 
