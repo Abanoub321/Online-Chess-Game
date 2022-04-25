@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { socket } from './services/socket';
-
+import { Routes, Route } from "react-router-dom";
 import './App.css';
+import { HomeRoute } from './routes/HomeRoute';
+import { GameRoute } from './routes/GameRoute';
 
 
 //const socket = io("http://localhost:5000");
 
 function App() {
 
-  const [gameId, setGameId] = useState('');
- 
+  //const [gameId, setGameId] = useState('');
+
   socket.on("connect", () => {
     console.log(socket.connected); // true
   });
@@ -17,33 +19,28 @@ function App() {
     console.log("disconnected");
   });
 
-  const createNewGame = () => {
-    socket.emit("create game", (response: any) => {
-      console.log(response);
-      //if ok navigate to game
-      //else show error
-    });
-  }
-  const joinGame = () => {
-    socket.emit("join game", gameId, (response: any) => {
-      console.log(response);
-      //if ok navigate to game
-      //else show error
-    });
-  }
-
-  socket!.on('gameList', (games: any) => {
-    console.log(games);
-  })
+  /*  const createNewGame = () => {
+      socket.emit("create game", (response: any) => {
+        console.log(response);
+        //if ok navigate to game
+        //else show error
+      });
+    }
+    const joinGame = () => {
+      socket.emit("join game", gameId, (response: any) => {
+        console.log(response);
+        //if ok navigate to game
+        //else show error
+      });
+    }*/
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <input type="button" value="create new game" onClick={createNewGame} />
-        <input type="text" value={gameId} onChange={(e) => setGameId(e.target.value)} />
-        <input type="button" value="join a Game" onClick={joinGame} />
-      </header>
-    </div>
+
+    <Routes>
+      <Route path="/" element={<HomeRoute socket={socket} />} />
+      <Route path="game/:gameId" element={<GameRoute />} />
+    </Routes>
+
   );
 }
 
