@@ -38,7 +38,8 @@ io.on("connection", (socket) => {
             cb({
                 status: "OK",
                 gameId: game!.id,
-                board: game!.board
+                board: game!.board,
+                gameStatus: game!.status
             });
             let availableGames = Object.keys(games).filter(gameId => {
                 return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
@@ -59,14 +60,20 @@ io.on("connection", (socket) => {
             let game = games[gameId];
             players[socket.id].joinGame(game!);
             socket.join(`room-${game?.id}`);
-            socket.to(`room-${game?.id}`).emit('joined game', game?.board);
             cb({
                 status: "OK",
                 gameId: game!.id,
-                board: game!.board
+                board: game!.board,
+                gameStatus: game!.status
             });
             let availableGames = Object.keys(games).filter(gameId => {
                 return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
+            });
+
+            socket.to(`room-${game?.id}`).emit('gameUpdates', {
+                gameId: game!.id,
+                board: game!.board,
+                gameStatus: game!.status
             });
             socket.broadcast.emit('gameList', availableGames);
         } catch (error: Error | any) {

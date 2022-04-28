@@ -15,7 +15,8 @@ export const CreateGameButton = (props: any) => {
                 navigate(`/game/${response.gameId}`, {
                     state: {
                         gameId: response.gameId,
-                        board: response.board
+                        board: response.board,
+                        gameStatus: response.gameStatus
                     }
                 });
             }
