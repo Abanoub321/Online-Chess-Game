@@ -9,9 +9,9 @@ export const GameBoard = (props: any) => {
     const [gameBoard, setGameBoard] = useState([] as any);
 
     useEffect(() => {
-
+        console.log(props);
         assignPieces(turnIntoBoard());
-    }, [])
+    }, [board])
     const buildBoard = () => {
         return gameBoard.map((row: any, rowIndex: number) => {
             return (
