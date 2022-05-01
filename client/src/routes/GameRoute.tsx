@@ -7,6 +7,7 @@ export const GameRoute = () => {
   const [gameStatus, setGameStatus] = useState(location.state.gameStatus);
   const [currentPlayerTurn, setCurrentPlayerTurn] = useState('white');
   const [playerColor,setPlayerColor] = useState('white');
+  const [gameId,setGameId] = useState(location.state.gameId);
   const { board } = location.state;
 
   socket.on('gameStarted', data => {
@@ -29,6 +30,7 @@ export const GameRoute = () => {
         gameStatus={gameStatus}
         currentPlayerTurn={currentPlayerTurn}
         playerColor={playerColor}
+        gameId={gameId}
       />
       <h4>you are {playerColor}</h4>
     </div>

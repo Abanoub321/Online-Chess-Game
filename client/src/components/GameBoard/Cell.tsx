@@ -1,12 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'react-bootstrap/Image'
 export const Cell = (props: any) => {
     const { color, row, col, cell } = props;
-
+    const [pressed, setPressed] = useState(false);
     return (
         <div style={{
-            display:'flex',
+            display: 'flex',
             backgroundColor: color,
             width: '75px',
             height: '75px',
@@ -16,14 +16,23 @@ export const Cell = (props: any) => {
 
         }}
             onClick={() => {
-               alert(row + ' ' + col)
+                if(props.onclick()){
+                    if (!pressed) {
+                        console.log(row, col);
+                        props.handleAvailableMoves(row, col);
+                    } else {
+                        console.log('after');
+    
+                    }
+                    setPressed(!pressed);
+                }
             }}
         >
             {
                 cell == null ? null :
                     <Image src={require(`../../assets/${cell.type}_${cell.color}.png`)} fluid />
             }
-        </div>
+        </div >
     );
 };
 
