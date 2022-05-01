@@ -7,13 +7,12 @@ import { socket } from '../../services/socket';
 
 export const GameBoard = (props: any) => {
     const { board, gameId } = props;
-    const [gameBoard, setGameBoard] = useState([] as any);
+    const [gameBoard, setGameBoard] = useState(board);
     const [normalMoves, setNormalMoves] = useState({});
     const [attackMoves, setAttackMoves] = useState({});
     const { playerColor, currentPlayerTurn } = props;
     useEffect(() => {
-        console.log(props);
-        assignPieces(turnIntoBoard());
+        flipBoard();
     }, [board])
     const buildBoard = () => {
         return gameBoard.map((row: any, rowIndex: number) => {
@@ -66,27 +65,9 @@ export const GameBoard = (props: any) => {
             return false
         }
     }
-    const turnIntoBoard = () => {
-        let newArray = new Array(8);
-        for (let i = 0; i < 8; i++) {
-            newArray[i] = new Array(8);
-            for (let j = 0; j < 8; j++)
-                newArray[i][j] = null;
-        }
-
-        return newArray;
-    }
-
-    const assignPieces = (newGameBoard: any) => {
-        let piecesArray = board.pieces;
-        piecesArray.forEach((piece: any) => {
-            const row = piece.row - 1;
-            const col = (piece.column).charCodeAt(0) - 65;
-            newGameBoard[row][col] = piece;
-
-        });
-        newGameBoard.reverse();
-        setGameBoard(newGameBoard);
+    const flipBoard = () => {      
+       let newBoard = board;
+        setGameBoard(newBoard.reverse());
     }
 
     return (

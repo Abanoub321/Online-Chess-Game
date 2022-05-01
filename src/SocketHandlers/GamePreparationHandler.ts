@@ -11,7 +11,7 @@ const GamePreparationHandler = (io: any, socket: any, games: any, players: any) 
             cb({
                 status: "OK",
                 gameId: game!.id,
-                board: game!.board,
+                board: game?.board?.getBoard(),
                 gameStatus: game!.status
             });
             let availableGames = Object.keys(games).filter(gameId => {
@@ -38,13 +38,13 @@ const GamePreparationHandler = (io: any, socket: any, games: any, players: any) 
                 status: "OK",
                 playerColor: players[socket.id].color,
                 gameId: game!.id,
-                board: game!.board,
+                board: game!.board?.getBoard(),
                 gameStatus: game!.status,
             });
             io.in(`room-${game?.id}`).emit('gameStarted', {
                 // playerColor: players[socket.id].name == game.player1.name ? game.player2.color : game.player1.color,
                 gameId: game!.id,
-                board: game!.board,
+                board: game!.board?.getBoard(),
                 gameStatus: game!.status,
                 currentPlayerTurn: game!.currentPlayer.color,
             });
