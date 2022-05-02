@@ -77,9 +77,15 @@ export const GameBoard = (props: any) => {
             }
         })
     }
-    const handlePieceClick = () => {
+    const handlePieceClick = (row: number, col: number) => {
         if (playerColor == currentPlayerTurn) {
-            return true
+            if(normalMoves[`${row-1},${col-1}`] || attackMoves[`${row-1},${col-1}`]) {
+                // move piece
+                console.log(`${row},${col}`);
+            }
+            else{
+                handleAvailableMoves(row, col);
+            }
         }
         else {
             alert('not your turn');
