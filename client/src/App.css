@@ -48,3 +48,9 @@ input {
   width: 100%;
   margin-top: 10px;
 }
+
+.normalMove {
+  -webkit-box-shadow: 0 0 1px 3px #000 inset;
+-moz-box-shadow: 0 0 1px 3px #000 inset;
+box-shadow: 0 0 1px 3px #000 inset;
+}

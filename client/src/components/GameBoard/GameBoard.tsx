@@ -8,18 +8,24 @@ import { socket } from '../../services/socket';
 export const GameBoard = (props: any) => {
     const { board, gameId } = props;
     const [gameBoard, setGameBoard] = useState(board);
-    const [normalMoves, setNormalMoves] = useState({});
-    const [attackMoves, setAttackMoves] = useState({});
+    const [flipped, setFlipped] = useState(false);
+    const [normalMoves, setNormalMoves] = useState({} as any);
+    const [attackMoves, setAttackMoves] = useState({} as any);
     const { playerColor, currentPlayerTurn } = props;
     useEffect(() => {
-        flipBoard();
+        if (!flipped)
+            flipBoard();
     }, [board])
     const buildBoard = () => {
         return gameBoard.map((row: any, rowIndex: number) => {
             return (
                 <Row key={rowIndex} className='gx-0' >
                     {row.map((cell: any, colIndex: number) => {
-
+                        let normalFlag, AttackFlag;
+                        if (normalMoves[`${(rowIndex - 7) * -1},${(colIndex - 7) * -1}`] == true)
+                            normalFlag = true
+                        if (attackMoves[`${rowIndex},${colIndex}`] == true)
+                            AttackFlag = true
                         return (
                             <Col key={colIndex} style={
                                 {
@@ -34,6 +40,8 @@ export const GameBoard = (props: any) => {
                                     cell={cell}
                                     onclick={handlePieceClick}
                                     handleAvailableMoves={handleAvailableMoves}
+                                    attackCell={AttackFlag}
+                                    normalCell={normalFlag}
                                 />
                             </Col>
                         )
@@ -50,10 +58,23 @@ export const GameBoard = (props: any) => {
             y: col - 1,
         }
         socket.emit('check-for-move', gameId, socket.id, move, (response: any) => {
-            const {attack,normal} = response;
-           /* attack.foreach(move => {
-                attackMoves[move.x + ',' + move.y] = move;
-            })*/
+            if (response.status == "OK") {
+
+                const { attack, normal } = response.availableMoves;
+
+                let newNormalMoves: any = {};
+                let newAttackMoves: any = {};
+                normal.forEach((move: any) => {
+                    let key = `${move.row},${move.column}`;
+                    newNormalMoves[key] = true;
+                })
+                attack.forEach((move: any) => {
+                    let key = `${move.row},${move.column}`;
+                    newAttackMoves[key] = true;
+                })
+                setNormalMoves(newNormalMoves);
+                setAttackMoves(newAttackMoves);
+            }
         })
     }
     const handlePieceClick = () => {
@@ -65,8 +86,9 @@ export const GameBoard = (props: any) => {
             return false
         }
     }
-    const flipBoard = () => {      
-       let newBoard = board;
+    const flipBoard = () => {
+        let newBoard = board;
+        setFlipped(true);
         setGameBoard(newBoard.reverse());
     }
 
