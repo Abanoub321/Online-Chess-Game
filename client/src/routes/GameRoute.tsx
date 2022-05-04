@@ -1,5 +1,5 @@
 import '../App.css'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameBoard } from '../components/GameBoard/GameBoard';
 import { socket } from '../services/socket';
@@ -9,21 +9,10 @@ export const GameRoute = () => {
   const [gameStatus, setGameStatus] = useState(location.state.gameStatus);
   const [currentPlayerTurn, setCurrentPlayerTurn] = useState('white');
   const [playerColor, setPlayerColor] = useState('white');
-  const [gameId, setGameId] = useState(location.state.gameId);
-  const [flipped, setFlipped] = useState(false);
   const [gameBoard, setGameBoard] = useState(location.state.board);
+  const gameId = location.state.gameId;
 
-  useEffect(() => {
-    //  if (!flipped)
-  }, [])
-
-
-  useEffect(() => {
-    console.log('updated')
-    //flipBoard(gameBoard);
-  }, [])
   socket.on('gameStarted', data => {
-    console.log(data);
     const { gameStatus, currentPlayerTurn } = data;
     setGameStatus(gameStatus);
     setCurrentPlayerTurn(currentPlayerTurn);
@@ -38,19 +27,9 @@ export const GameRoute = () => {
 
     setGameStatus(gameStatus);
     setCurrentPlayerTurn(currentPlayerTurn);
-    console.log(board[0]);
     setGameBoard(board);
-    console.log(gameBoard[0]);
-
   })
 
-
-
-  const flipBoard = (board: []) => {
-    let newBoard = board;
-    setFlipped(true);
-    setGameBoard(newBoard.reverse());
-  }
   return (
     <div className='Game_Page' >
       <h1>{gameStatus!='STARTED'?gameStatus.toLowerCase().split('_').join(' '):null}</h1>

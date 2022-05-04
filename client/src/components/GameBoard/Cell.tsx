@@ -1,5 +1,4 @@
 import '../../App.css'
-import React from 'react';
 import Image from 'react-bootstrap/Image'
 export const Cell = (props: any) => {
     const { color, row, col, cell } = props;

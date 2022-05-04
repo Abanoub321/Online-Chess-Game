@@ -8,7 +8,6 @@ export const GameCard = (props: any) => {
     const joinGameHandler = (e: any) => {
         e.preventDefault();
         socket.emit('join game', game, (response: any) => {
-            console.log(response);
             if (response.status == 'OK') {
                 navigate(`/game/${response.gameId}`, {
                     state: {
