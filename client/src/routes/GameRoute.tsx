@@ -1,7 +1,9 @@
+import '../App.css'
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameBoard } from '../components/GameBoard/GameBoard';
 import { socket } from '../services/socket';
+import { Turn } from '../components/Turn';
 export const GameRoute = () => {
   const location: any = useLocation();
   const [gameStatus, setGameStatus] = useState(location.state.gameStatus);
@@ -12,13 +14,13 @@ export const GameRoute = () => {
   const [gameBoard, setGameBoard] = useState(location.state.board);
 
   useEffect(() => {
-  //  if (!flipped)
-}, [])
+    //  if (!flipped)
+  }, [])
 
 
-useEffect(() => {
-  console.log('updated')
-  //flipBoard(gameBoard);
+  useEffect(() => {
+    console.log('updated')
+    //flipBoard(gameBoard);
   }, [])
   socket.on('gameStarted', data => {
     console.log(data);
@@ -33,13 +35,13 @@ useEffect(() => {
   })
   socket.once('move-made', (response: any) => {
     const { gameStatus, currentPlayerTurn, board } = response;
-    
-      setGameStatus(gameStatus);
-      setCurrentPlayerTurn(currentPlayerTurn);
-      console.log(board[0]);
-      setGameBoard(board);
-      console.log(gameBoard[0]);
-    
+
+    setGameStatus(gameStatus);
+    setCurrentPlayerTurn(currentPlayerTurn);
+    console.log(board[0]);
+    setGameBoard(board);
+    console.log(gameBoard[0]);
+
   })
 
 
@@ -50,17 +52,18 @@ useEffect(() => {
     setGameBoard(newBoard.reverse());
   }
   return (
-    <div>
-      <h1>{gameStatus.toLowerCase().split('_').join(' ')}</h1>
-      <h4>Now it's {currentPlayerTurn} turn</h4>
-      <GameBoard
-        board={gameBoard}
-        gameStatus={gameStatus}
-        currentPlayerTurn={currentPlayerTurn}
-        playerColor={playerColor}
-        gameId={gameId}
-      />
-      <h4>you are {playerColor}</h4>
+    <div className='Game_Page' >
+      <h1>{gameStatus!='STARTED'?gameStatus.toLowerCase().split('_').join(' '):null}</h1>
+      <div className='Game_layer'>
+        <GameBoard
+          board={gameBoard}
+          gameStatus={gameStatus}
+          currentPlayerTurn={currentPlayerTurn}
+          playerColor={playerColor}
+          gameId={gameId}
+          />
+          <Turn color={currentPlayerTurn} />
+      </div>
     </div>
   );
 };

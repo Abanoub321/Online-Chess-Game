@@ -51,6 +51,17 @@ input {
   margin-top: 10px;
 }
 
+.Game_Page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Game_layer {
+  display: flex;
+  flex-direction: row;
+}
+
 .board {
   display: flex;
   flex-wrap: wrap;
@@ -78,4 +89,17 @@ input {
   -webkit-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
   -moz-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
   box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+}
+
+.turn {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+align-items: center ;
+  margin: 10px;
+}
+.color_turn{
+  width: 75px;
+  height: 75px;
+  border: 1px solid black;
 }
