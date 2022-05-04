@@ -1,55 +1,68 @@
-import { useState, useEffect } from "react";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import '../../App.css';
+import { useState } from "react";
 import { Cell } from "./Cell";
 import { socket } from '../../services/socket';
 
 export const GameBoard = (props: any) => {
-    let { board, gameId } = props;
+    const { board, gameId } = props;
 
 
     const [normalMoves, setNormalMoves] = useState({} as any);
     const [attackMoves, setAttackMoves] = useState({} as any);
     const [selectedCell, setSelectedCell] = useState({} as any);
+
     const { playerColor, currentPlayerTurn } = props;
 
     const buildBoard = () => {
-        board.reverse()
-        console.log(board)
-        return board.map((row: any, rowIndex: number) => {
-            return (
-                <Row key={rowIndex} className='gx-0' >
-                    {row.map((cell: any, colIndex: number) => {
-                        let normalFlag, AttackFlag;
-                        if (normalMoves[`${rowIndex},${colIndex}`] == true)
-                            normalFlag = true
-                        if (attackMoves[`${rowIndex},${colIndex}`] == true)
-                            AttackFlag = true
-                        return (
-                            <Col key={colIndex} style={
-                                {
-                                    margin: '0px',
-                                }
-                            }
-                            >
-                                <Cell
-                                    color={(rowIndex + colIndex) % 2 == 0 ? 'white' : 'grey'}
-                                    col={colIndex}
-                                    row={rowIndex}
-                                    cell={cell}
-                                    onclick={handlePieceClick}
-                                    handleAvailableMoves={handleAvailableMoves}
-                                    attackCell={AttackFlag}
-                                    normalCell={normalFlag}
-                                />
-                            </Col>
-                        )
-                    })
-                    }
-                </Row>
-            )
-        })
+        let newBoard = [];
+        if (playerColor === 'black') {
+
+            for (let i = 0; i < board.length; i++) {
+
+                for (let j = 0; j < board[i].length; j++) {
+                    let cell = board[i][j];
+                    let normalFlag, AttackFlag;
+                    if (normalMoves[`${i},${j}`] == true)
+                        normalFlag = true
+                    if (attackMoves[`${i},${j}`] == true)
+                        AttackFlag = true
+                    newBoard.push(<Cell
+                        color={(i + j) % 2 == 0 ? 'white' : 'grey'}
+                        col={j}
+                        row={i}
+                        cell={cell}
+                        onclick={handlePieceClick}
+                        handleAvailableMoves={handleAvailableMoves}
+                        attackCell={AttackFlag}
+                        normalCell={normalFlag}
+                    />)
+                }
+            }
+        } else {
+
+            for (let i = board.length - 1; i >= 0; i--) {
+
+                for (let j = board.length - 1; j >= 0; j--) {
+                    let cell = board[i][j];
+                    let normalFlag, AttackFlag;
+                    if (normalMoves[`${i},${j}`] == true)
+                        normalFlag = true
+                    if (attackMoves[`${i},${j}`] == true)
+                        AttackFlag = true
+                    newBoard.push(<Cell
+                        color={(i + j) % 2 == 0 ? 'white' : 'grey'}
+                        col={j}
+                        row={i}
+                        cell={cell}
+                        onclick={handlePieceClick}
+                        handleAvailableMoves={handleAvailableMoves}
+                        attackCell={AttackFlag}
+                        normalCell={normalFlag}
+                    />)
+                }
+            }
+        }
+        return newBoard;
     }
 
     const handleAvailableMoves = (row: number, col: number) => {
@@ -84,7 +97,7 @@ export const GameBoard = (props: any) => {
             console.log(response);
             setNormalMoves({});
             setAttackMoves({});
-            setSelectedCell({ });
+            setSelectedCell({});
         })
 
     }
@@ -107,12 +120,11 @@ export const GameBoard = (props: any) => {
 
 
     return (
-        <Container style={{
-            width: 'fit-content',
-        }}>
+        <div className='board' id="board">
             {
                 buildBoard()
             }
-        </Container>
+        </div>
+
     );
 };

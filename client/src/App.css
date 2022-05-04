@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  align-items: center;
 }
 
 .App-logo {
@@ -32,13 +33,14 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
 input {
-  
+
   color: #282c34;
   border: none;
   border-radius: 5px;
@@ -48,22 +50,32 @@ input {
   width: 100%;
   margin-top: 10px;
 }
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 600px;
+  height: 600px;
+  background-color: rgb(17, 94, 13);
+}
+
 .rectangle {
   display: flex;
   width: 75px;
   height: 75px;
   border: 1px solid black;
   margin: 0px;
-  justify-content:center;
+  justify-content: center;
 }
 
 .normalMove {
   -webkit-box-shadow: 0 0 1px 3px #000 inset;
--moz-box-shadow: 0 0 1px 3px #000 inset;
-box-shadow: 0 0 1px 3px #000 inset;
+  -moz-box-shadow: 0 0 1px 3px #000 inset;
+  box-shadow: 0 0 1px 3px #000 inset;
 }
+
 .killMove {
   -webkit-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
--moz-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+  -moz-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+  box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
 }
