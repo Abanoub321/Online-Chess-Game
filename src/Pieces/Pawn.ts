@@ -65,10 +65,10 @@ export default class Pawn extends Piece {
             ];
 
             validPieces = pieces.filter(piece => {
-                if (piece.column === killMoves[0].column && piece.row === killMoves[0].row) {
+                if (piece.column === killMoves[0].column && piece.row === killMoves[0].row && piece.color !== this.color) {
                     return piece;
                 }
-                if (piece.column === killMoves[1].column && piece.row === killMoves[1].row) {
+                if (piece.column === killMoves[1].column && piece.row === killMoves[1].row && piece.color !== this.color) {
                     return piece;
                 }
             }
@@ -86,10 +86,10 @@ export default class Pawn extends Piece {
             ];
 
             validPieces = pieces.filter(piece => {
-                if (piece.column === killMoves[0].column && piece.row === killMoves[0].row) {
+                if (piece.column === killMoves[0].column && piece.row === killMoves[0].row && piece.color !== this.color) {
                     return piece;
                 }
-                if (piece.column === killMoves[1].column && piece.row === killMoves[1].row) {
+                if (piece.column === killMoves[1].column && piece.row === killMoves[1].row && piece.color !== this.color) {
                     return piece;
                 }
             }
