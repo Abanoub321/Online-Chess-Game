@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 import Board from "../Board";
 import Player from "../player/Player";
 import GameStatus from "../GameStatusEnum";
@@ -5,6 +6,7 @@ import color from "../ColorEnum";
 
 export default class Game {
 
+    id: string;
     board: Board;
     player1: Player;
     player2: Player = null as any;
@@ -12,6 +14,7 @@ export default class Game {
     currentPlayer: Player | undefined;
 
     constructor(player: Player) {
+        this.id = uuid.v4();
         this.board = new Board();
         this.player1 = player;
         this.status = GameStatus.WAITING_FOR_PLAYERS;
@@ -37,11 +40,15 @@ export default class Game {
     }
 
     avialableMoves(player: Player, x: number, y: number): { normal: Array<{ row: number, column: number }>, attack: Array<{ row: number, column: number }> } {
+
         if (this.status !== GameStatus.STARTED)
             throw new Error('Game not started');
         if (player.color !== this.currentPlayer!.color)
             throw new Error('Player is not current player');
-        if (this.board.getBoard()[x][y].color !== player.color)
+        let piece = this.board.getBoard()[x ][y];
+        if (piece == null)
+            throw new Error('Player should choose piece');
+        if (piece.color !== player.color)
             throw new Error('Piece is not yours');
 
         let normal = this.board.getPieceMoves(x, y)

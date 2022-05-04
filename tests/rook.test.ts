@@ -69,6 +69,16 @@ describe('Rook', () => {
 
         expect(rook.getKillMoves(pieces)).toEqual(['A5']);
     });
+    it('can\'t kill behind allies',()=> {
+        const rook = new Rook('white', 'A', 1);
+
+        const pieces = [
+            new Rook('black', 'A', 6),
+            new Rook('white', 'A', 5),
+        ];
+
+        expect(rook.getKillMoves(pieces)).toEqual([]);
+    })
 
     it('can\'t kill allies', () => {
         const rook = new Rook('white', 'A', 2);

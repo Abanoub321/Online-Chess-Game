@@ -125,10 +125,10 @@ export default class Queen extends Piece {
         const row = this.row;
         const column = this.column;
 
-        let locations: { [key: string]: boolean } = {};
+        let locations: { [key: string]: Piece } = {};
         pieces.forEach(piece => {
-            if (piece.color !== this.color)
-                locations[piece.column + piece.row] = true;
+            //  if (piece.color !== this.color)
+            locations[piece.column + piece.row] = piece;
         });
 
 
@@ -141,16 +141,19 @@ export default class Queen extends Piece {
         for (let i = row + 1; i <= 8; i++) {
 
             if (locations[String.fromCharCode(column.charCodeAt(0) - countable) + i] && !booleans[0]) {
-                moves.push(`${String.fromCharCode(column.charCodeAt(0) - countable)}${i}`);
+                if (locations[String.fromCharCode(column.charCodeAt(0) - countable) + i].color !== this.color)
+                    moves.push(`${String.fromCharCode(column.charCodeAt(0) - countable)}${i}`);
                 booleans[0] = true;
             }
             if (locations[String.fromCharCode(column.charCodeAt(0) + countable) + i] && !booleans[1]) {
-                moves.push(`${String.fromCharCode(column.charCodeAt(0) + countable)}${i}`);
+                if (locations[String.fromCharCode(column.charCodeAt(0) + countable) + i].color !== this.color)
+                    moves.push(`${String.fromCharCode(column.charCodeAt(0) + countable)}${i}`);
                 booleans[1] = true;
             }
 
             if (locations[column + i] && !booleans[2]) {
-                moves.push(`${column}${i}`);
+                if (locations[column + i].color !== this.color)
+                    moves.push(`${column}${i}`);
                 booleans[2] = true;
             }
 
@@ -165,16 +168,19 @@ export default class Queen extends Piece {
         for (let i = row - 1; i >= 1; i--) {
 
             if (locations[String.fromCharCode(column.charCodeAt(0) - countable) + i] && !booleans[0]) {
-                moves.push(`${String.fromCharCode(column.charCodeAt(0) - countable)}${i}`);
+                if (locations[String.fromCharCode(column.charCodeAt(0) - countable) + i].color !== this.color)
+                    moves.push(`${String.fromCharCode(column.charCodeAt(0) - countable)}${i}`);
                 booleans[0] = true;
             }
             if (locations[String.fromCharCode(column.charCodeAt(0) + countable) + i] && !booleans[1]) {
-                moves.push(`${String.fromCharCode(column.charCodeAt(0) + countable)}${i}`);
+                if (locations[String.fromCharCode(column.charCodeAt(0) + countable) + i].color !== this.color)
+                    moves.push(`${String.fromCharCode(column.charCodeAt(0) + countable)}${i}`);
                 booleans[1] = true;
             }
 
             if (locations[column + i] && !booleans[2]) {
-                moves.push(`${column}${i}`);
+                if (locations[column + i].color !== this.color)
+                    moves.push(`${column}${i}`);
                 booleans[2] = true;
             }
 
@@ -189,12 +195,13 @@ export default class Queen extends Piece {
         while (column.charCodeAt(0) - countable > 64 || column.charCodeAt(0) + countable < 73) {
 
             if (locations[String.fromCharCode(column.charCodeAt(0) - countable) + row] && !booleans[0]) {
-                moves.push(`${String.fromCharCode(column.charCodeAt(0) - countable)}${row}`);
+                if (locations[String.fromCharCode(column.charCodeAt(0) - countable) + row].color !== this.color)
+                    moves.push(`${String.fromCharCode(column.charCodeAt(0) - countable)}${row}`);
                 booleans[0] = true;
             }
             if (locations[String.fromCharCode(column.charCodeAt(0) + countable) + row] && !booleans[1]) {
-
-                moves.push(`${String.fromCharCode(column.charCodeAt(0) + countable)}${row}`);
+                if (locations[String.fromCharCode(column.charCodeAt(0) + countable) + row].color !== this.color)
+                    moves.push(`${String.fromCharCode(column.charCodeAt(0) + countable)}${row}`);
                 booleans[1] = true;
             }
 

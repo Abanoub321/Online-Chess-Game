@@ -93,5 +93,10 @@ describe('Pawn', () => {
         expect(pawn.column).toBe('D');
         expect(pawn.row).toBe(5);
     });
+    it('can not has move to kill allies',()=> {
+        const pawn: Pawn = new Pawn('white', 'E', 2);
+        const pawn2: Pawn = new Pawn('white', 'D', 3);
+        expect(pawn.getKillMoves([pawn2])).toEqual([]);
+    })
     test.skip('Pawn promotes', () => { });
 });

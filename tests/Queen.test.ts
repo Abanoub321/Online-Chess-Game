@@ -112,4 +112,17 @@ describe('Queen', () => {
             queen.move('B3', pieces);
         }).toThrow();
     });
+    it('can not move to kill behind enemis or allies 2', () => {
+        const queen = new Queen('white', 'D', 1);
+
+        const pieces = [
+            new Queen('black','C',2),
+            new Queen('white','D',4),
+            new Queen('black','D',5),
+        ];
+
+        expect(() => {
+            queen.move('D5', pieces);
+        }).toThrow();
+    });
 });
