@@ -6,23 +6,23 @@ import { Cell } from "./Cell";
 import { socket } from '../../services/socket';
 
 export const GameBoard = (props: any) => {
-    const { board, gameId } = props;
-    const [gameBoard, setGameBoard] = useState(board);
-    const [flipped, setFlipped] = useState(false);
+    let { board, gameId } = props;
+
+
     const [normalMoves, setNormalMoves] = useState({} as any);
     const [attackMoves, setAttackMoves] = useState({} as any);
+    const [selectedCell, setSelectedCell] = useState({} as any);
     const { playerColor, currentPlayerTurn } = props;
-    useEffect(() => {
-        if (!flipped)
-            flipBoard();
-    }, [board])
+
     const buildBoard = () => {
-        return gameBoard.map((row: any, rowIndex: number) => {
+        board.reverse()
+        console.log(board)
+        return board.map((row: any, rowIndex: number) => {
             return (
                 <Row key={rowIndex} className='gx-0' >
                     {row.map((cell: any, colIndex: number) => {
                         let normalFlag, AttackFlag;
-                        if (normalMoves[`${(rowIndex - 7) * -1},${(colIndex - 7) * -1}`] == true)
+                        if (normalMoves[`${rowIndex},${colIndex}`] == true)
                             normalFlag = true
                         if (attackMoves[`${rowIndex},${colIndex}`] == true)
                             AttackFlag = true
@@ -35,8 +35,8 @@ export const GameBoard = (props: any) => {
                             >
                                 <Cell
                                     color={(rowIndex + colIndex) % 2 == 0 ? 'white' : 'grey'}
-                                    col={(colIndex - 8) * -1}
-                                    row={(rowIndex - 8) * -1}
+                                    col={colIndex}
+                                    row={rowIndex}
                                     cell={cell}
                                     onclick={handlePieceClick}
                                     handleAvailableMoves={handleAvailableMoves}
@@ -74,17 +74,29 @@ export const GameBoard = (props: any) => {
                 })
                 setNormalMoves(newNormalMoves);
                 setAttackMoves(newAttackMoves);
+                setSelectedCell({ row, col });
             }
         })
     }
+    const handlePieceMove = (row: number, col: number) => {
+
+        socket.emit('make-move', gameId, socket.id, { x: selectedCell.row - 1, y: selectedCell.col - 1 }, { x: row - 1, y: col - 1 }, (response: any) => {
+            console.log(response);
+            setNormalMoves({});
+            setAttackMoves({});
+            setSelectedCell({ });
+        })
+
+    }
     const handlePieceClick = (row: number, col: number) => {
+
         if (playerColor == currentPlayerTurn) {
-            if(normalMoves[`${row-1},${col-1}`] || attackMoves[`${row-1},${col-1}`]) {
+            if (normalMoves[`${row},${col}`] || attackMoves[`${row},${col}`]) {
                 // move piece
-                console.log(`${row},${col}`);
+                handlePieceMove(row + 1, col + 1);
             }
-            else{
-                handleAvailableMoves(row, col);
+            else {
+                handleAvailableMoves(row + 1, col + 1);
             }
         }
         else {
@@ -92,11 +104,7 @@ export const GameBoard = (props: any) => {
             return false
         }
     }
-    const flipBoard = () => {
-        let newBoard = board;
-        setFlipped(true);
-        setGameBoard(newBoard.reverse());
-    }
+
 
     return (
         <Container style={{
