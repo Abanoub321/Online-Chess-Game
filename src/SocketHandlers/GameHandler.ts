@@ -26,11 +26,14 @@ const GameHandler = (io: any, socket: any, games: any, players: any) => {
 
         try {
             game?.movePiece(player, oldMove.x, oldMove.y, newMove.x, newMove.y);
-            socket.to(`room-${game?.id}`).emit('move made', game?.board);
             cb({
                 status: "OK",
-                board: game?.board
             })
+            io.in(`room-${game?.id}`).emit('move-made', {
+                board: game?.board?.getBoard(),
+                gameStatus: game!.status,
+                currentPlayerTurn: game!.currentPlayer.color,
+            });
         } catch (error: Error | any) {
             console.log(error.message);
             cb({
