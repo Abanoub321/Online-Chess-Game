@@ -43,7 +43,7 @@ export default class Rook extends Piece {
 
 
 
-        if (isCastlingAvailable(pieces,this)) {
+        if (isCastlingAvailable(pieces, this)) {
             moves.push(`E${this.row}`);
         }
         return moves;
@@ -93,29 +93,43 @@ export default class Rook extends Piece {
         const moves: string[] = [];
         const row = this.row;
         const column = this.column;
+
+        let locations: { [key: string]: boolean } = {};
+        pieces.forEach(piece => {
+            locations[piece.column + piece.row] = true;
+        });
+
         for (let i = this.row - 1; i >= 1; i--) {
             if (pieces.find(piece => piece.row == i && piece.column == column && piece.color != this.color)) {
                 moves.push(`${column}${i}`);
                 break;
             }
+            if (locations[column + i])
+                break;
         }
         for (let i = this.row + 1; i <= 8; i++) {
             if (pieces.find(piece => piece.row == i && piece.column == column && piece.color != this.color)) {
                 moves.push(`${column}${i}`);
                 break;
             }
+            if (locations[column + i])
+                break;
         }
         for (let i = column.charCodeAt(0) + 1; i <= 72; i++) {
             if (pieces.find(piece => piece.row == row && piece.column == String.fromCharCode(i) && piece.color != this.color)) {
                 moves.push(`${String.fromCharCode(i)}${row}`);
                 break;
             }
+            if (locations[String.fromCharCode(i) + row])
+                break;
         }
         for (let i = column.charCodeAt(0) - 1; i >= 65; i--) {
             if (pieces.find(piece => piece.row == row && piece.column == String.fromCharCode(i) && piece.color != this.color)) {
                 moves.push(`${String.fromCharCode(i)}${row}`);
                 break;
             }
+            if (locations[String.fromCharCode(i) + row])
+                break;
         }
         return moves;
     }

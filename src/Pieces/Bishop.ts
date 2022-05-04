@@ -78,31 +78,44 @@ export default class Bishop extends Piece {
         let left: number, right: number;
         left = column.charCodeAt(0) - 1;
         right = column.charCodeAt(0) + 1;
-
+        let locations: { [key: string]: boolean } = {};
+        pieces.forEach(piece => {
+            locations[piece.column + piece.row] = true;
+        });
+        let leftSide: boolean, rightSide: boolean;
+        leftSide = rightSide = true;
         for (let i = row - 1; i >= 1; i--) {
-            if (left >= 65) {
+            if (left >= 65 && leftSide) {
                 if (pieces.find(piece => piece.row === i && piece.column === String.fromCharCode(left) && piece.color !== this.color))
                     moves.push(`${String.fromCharCode(left)}${i}`);
+                if (locations[String.fromCharCode(left) + i])
+                    leftSide = false
                 left--;
             }
-            if (right <= 72) {
+            if (right <= 72 && rightSide) {
                 if (pieces.find(piece => piece.row === i && piece.column === String.fromCharCode(right) && piece.color !== this.color))
                     moves.push(`${String.fromCharCode(right)}${i}`);
+                if (locations[String.fromCharCode(right) + i])
+                    rightSide = false
                 right++;
             }
         }
         left = column.charCodeAt(0) - 1;
         right = column.charCodeAt(0) + 1;
-
+        leftSide = rightSide = true;
         for (let i = row + 1; i <= 8; i++) {
-            if (left >= 65) {
+            if (left >= 65 && leftSide) {
                 if (pieces.find(piece => piece.row === i && piece.column === String.fromCharCode(left) && piece.color !== this.color))
                     moves.push(`${String.fromCharCode(left)}${i}`);
+                if (locations[String.fromCharCode(left) + i])
+                    leftSide = false
                 left--;
             }
-            if (right <= 72) {
+            if (right <= 72 && rightSide) {
                 if (pieces.find(piece => piece.row === i && piece.column === String.fromCharCode(right) && piece.color !== this.color))
                     moves.push(`${String.fromCharCode(right)}${i}`);
+                if (locations[String.fromCharCode(right) + i])
+                    rightSide = false
                 right++;
             }
         }
