@@ -7,20 +7,15 @@ export const Cell = (props: any) => {
 
     const styles = {
         rectangle: {
-            display: 'flex',
-            backgroundColor: color,
-            width: '75px',
-            height: '75px',
-            border: '1px solid black',
-            margin: '0px',
-            justifyContent: 'center',
-
+            backgroundColor: color
         }
     }
     return (
-        <div style={styles.rectangle}
-            className={props.normalCell ? 'normalMove' : ''}
-            onClick={() => props.onclick(row, col)}
+        <div
+            className={props.normalCell ? 'rectangle ' + 'normalMove' : props.attackCell ? 'killMove ' + 'rectangle' : 'rectangle'}
+            style={styles.rectangle}
+            onClick={() => props.onclick(row, col)
+            }
         >
 
             {

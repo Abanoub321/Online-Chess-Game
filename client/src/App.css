@@ -48,9 +48,22 @@ input {
   width: 100%;
   margin-top: 10px;
 }
+.rectangle {
+  display: flex;
+  width: 75px;
+  height: 75px;
+  border: 1px solid black;
+  margin: 0px;
+  justify-content:center;
+}
 
 .normalMove {
   -webkit-box-shadow: 0 0 1px 3px #000 inset;
 -moz-box-shadow: 0 0 1px 3px #000 inset;
 box-shadow: 0 0 1px 3px #000 inset;
+}
+.killMove {
+  -webkit-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+-moz-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
 }
