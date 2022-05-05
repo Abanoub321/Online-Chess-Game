@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button'
 
@@ -9,7 +8,6 @@ export const CreateGameButton = (props: any) => {
     const CreateGame = (e: Event | any) => {
         e.preventDefault();
         socket.emit('create game', (response: any) => {
-            console.log(response);
             //if ok navigate to game
             if (response.status == 'OK') {
                 navigate(`/game/${response.gameId}`, {

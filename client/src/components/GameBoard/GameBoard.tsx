@@ -94,7 +94,6 @@ export const GameBoard = (props: any) => {
     const handlePieceMove = (row: number, col: number) => {
 
         socket.emit('make-move', gameId, socket.id, { x: selectedCell.row - 1, y: selectedCell.col - 1 }, { x: row - 1, y: col - 1 }, (response: any) => {
-            console.log(response);
             setNormalMoves({});
             setAttackMoves({});
             setSelectedCell({});
