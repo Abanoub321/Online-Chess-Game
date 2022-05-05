@@ -4,6 +4,8 @@ import { useLocation } from 'react-router-dom';
 import { GameBoard } from '../components/GameBoard/GameBoard';
 import { socket } from '../services/socket';
 import { Turn } from '../components/Turn';
+import { NumberColumn } from '../components/GameBoard/NumberColumn';
+import { LetterRow } from '../components/GameBoard/LetterRow';
 export const GameRoute = () => {
   const location: any = useLocation();
   const [gameStatus, setGameStatus] = useState(location.state.gameStatus);
@@ -31,18 +33,23 @@ export const GameRoute = () => {
   })
 
   return (
-    <div className='Game_Page' >
-      <h1>{gameStatus!='STARTED'?gameStatus.toLowerCase().split('_').join(' '):null}</h1>
-      <div className='Game_layer'>
-        <GameBoard
-          board={gameBoard}
-          gameStatus={gameStatus}
-          currentPlayerTurn={currentPlayerTurn}
-          playerColor={playerColor}
-          gameId={gameId}
+    <>
+      <div className='Game_Page' >
+        <h1>{gameStatus != 'STARTED' ? gameStatus.toLowerCase().split('_').join(' ') : null}</h1>
+        <div className='Game_layer'>
+          <NumberColumn currentColor={playerColor} />
+          <GameBoard
+            board={gameBoard}
+            gameStatus={gameStatus}
+            currentPlayerTurn={currentPlayerTurn}
+            playerColor={playerColor}
+            gameId={gameId}
           />
           <Turn color={currentPlayerTurn} />
+        </div>
+       
+          <LetterRow currentColor={playerColor} />
       </div>
-    </div>
+    </>
   );
 };

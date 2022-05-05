@@ -42,11 +42,30 @@
   display: flex;
   flex-direction: column;
   align-self: center;
-align-items: center ;
+  align-items: center;
   margin: 10px;
 }
-.color_turn{
+
+.color_turn {
   width: 75px;
   height: 75px;
   border: 1px solid black;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.row {
+  margin: 10px;
+}
+
+.tile {
+  display: flex;
+  width: 65px;
+  height: 65px;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
