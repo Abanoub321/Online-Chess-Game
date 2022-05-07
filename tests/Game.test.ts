@@ -423,4 +423,18 @@ describe('Game', () => {
         game.promotePawn(currentPlayer!, 'queen');
         expect(game.status).toBe('BLACK_CHECKMATE');
     })
+
+    it('should not move piece defending king', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 4, 3, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 4, 4, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 3, 4, 7);
+        currentPlayer = game.currentPlayer;
+        expect(game.avialableMoves(currentPlayer!, 6, 5)).toEqual({"attack": [], "normal": []});
+    })
+
 });

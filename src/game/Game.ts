@@ -58,16 +58,18 @@ export default class Game {
             throw new Error('Piece is not yours');
         let normal: { row: number, column: number }[], attack: { row: number, column: number }[];
         normal = attack = [];
+        let defenders = this.board.getDefendAllies(piece.color);
+        let defendingPiece: Piece | undefined = defenders.find(p => p.row === x + 1 && p.column === String.fromCharCode(y + 65))
         if (this.status === GameStatus.WHITE_CHECKMATE || this.status === GameStatus.BLACK_CHECKMATE) {
-            let defenders = this.board.getDefendAllies(piece.color);
-            let defendingPiece: Piece | undefined = defenders.find(p => p.row === x + 1 && p.column === String.fromCharCode(y + 65))
             if (defendingPiece) {
                 normal = this.board.availFakeMoves(defendingPiece);
                 attack = this.board.availFakeKillMoves(defendingPiece);
             }
         } else {
-            normal = this.board.getPieceMoves(x, y)
-            attack = this.board.getPieceAttackMoves(x, y);
+            if (defendingPiece) {
+                normal = this.board.getPieceMoves(x, y)
+                attack = this.board.getPieceAttackMoves(x, y);
+            }
         }
         return {
             normal,
