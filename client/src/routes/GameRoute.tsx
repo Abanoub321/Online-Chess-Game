@@ -31,7 +31,11 @@ export const GameRoute = () => {
     setCurrentPlayerTurn(currentPlayerTurn);
     setGameBoard(board);
   })
-
+  const promotePawn = () => {
+    socket.emit('promote', gameId, socket.id, 'queen', (response: any) => {
+      console.log(response);
+    });
+  }
   return (
     <>
       <div className='Game_Page' >
@@ -47,9 +51,13 @@ export const GameRoute = () => {
           />
           <Turn color={currentPlayerTurn} />
         </div>
-       
-          <LetterRow currentColor={playerColor} />
+
+        <LetterRow currentColor={playerColor} />
+
       </div>
+        {
+          (gameStatus === 'WHITE_PROMOTE' && playerColor === 'white') || (gameStatus === 'BLACK_PROMOTE' && playerColor === 'black') ? <input type='button' onClick={promotePawn} value='promote' style={{width:30,height:30}}/> : null
+        }
     </>
   );
 };
