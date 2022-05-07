@@ -1,18 +1,32 @@
 import '../App.css'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Modal from 'react-overlays/Modal';
 import { GameBoard } from '../components/GameBoard/GameBoard';
 import { socket } from '../services/socket';
 import { Turn } from '../components/Turn';
 import { NumberColumn } from '../components/GameBoard/NumberColumn';
 import { LetterRow } from '../components/GameBoard/LetterRow';
+import { ModalMatcher } from '../components/ModalComponents/ModalMatcher';
+
+
+
 export const GameRoute = () => {
   const location: any = useLocation();
   const [gameStatus, setGameStatus] = useState(location.state.gameStatus);
   const [currentPlayerTurn, setCurrentPlayerTurn] = useState('white');
   const [playerColor, setPlayerColor] = useState('white');
   const [gameBoard, setGameBoard] = useState(location.state.board);
+  const [show, setShow] = useState(false);
   const gameId = location.state.gameId;
+
+
+  useEffect(() => {
+    if (gameStatus === 'WHITE_PROMOTE' && playerColor === 'white')
+      setShow(true);
+    else if (gameStatus === 'BLACK_PROMOTE' && playerColor === 'black')
+      setShow(true);
+  },[gameStatus])
 
   socket.on('gameStarted', data => {
     const { gameStatus, currentPlayerTurn } = data;
@@ -31,10 +45,11 @@ export const GameRoute = () => {
     setCurrentPlayerTurn(currentPlayerTurn);
     setGameBoard(board);
   })
-  const promotePawn = () => {
-    socket.emit('promote', gameId, socket.id, 'queen', (response: any) => {
+  const promotePawn = (type:string) => {
+    socket.emit('promote', gameId, socket.id, type, (response: any) => {
       console.log(response);
     });
+    setShow(false);
   }
   return (
     <>
@@ -53,11 +68,17 @@ export const GameRoute = () => {
         </div>
 
         <LetterRow currentColor={playerColor} />
-
+        <Modal
+          show={show}
+          onHide={() => setShow(false)}
+          aria-labelledby="modal-label"
+          enforceFocus
+          className='modal-guts'
+        >
+          <ModalMatcher color={playerColor} onClick={promotePawn} />
+        </Modal>
       </div>
-        {
-          (gameStatus === 'WHITE_PROMOTE' && playerColor === 'white') || (gameStatus === 'BLACK_PROMOTE' && playerColor === 'black') ? <input type='button' onClick={promotePawn} value='promote' style={{width:30,height:30}}/> : null
-        }
     </>
   );
 };
+
