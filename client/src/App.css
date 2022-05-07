@@ -69,3 +69,53 @@
   align-items: flex-end;
   justify-content: flex-end;
 }
+.modal-guts {
+
+  /* other stuff we already covered */
+
+  /* cover the modal */
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* spacing as needed */
+  padding: 20px 50px 20px 20px;
+
+  /* let it scroll */
+  overflow: auto;
+  
+}
+.backdrop {
+  position: fixed;
+  z-index: 1040;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  opacity: 0.5;
+}
+.overlay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 700px;
+  height: 200px;
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  /*width: 100px; /* Need a specific value to work */
+  background-color: white;
+  border-radius: 15px;
+  animation: blinker 1s cubic-bezier(0.5, 0, 1, 1) infinite alternate;
+}
+
+.promote_pieces {
+  width: 120px;
+  height: 120px;
+  margin: 10px;
+}
