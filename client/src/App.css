@@ -1,0 +1,121 @@
+.Game_Page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Game_layer {
+  display: flex;
+  flex-direction: row;
+}
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 600px;
+  height: 600px;
+  background-color: rgb(17, 94, 13);
+}
+
+.rectangle {
+  display: flex;
+  width: 75px;
+  height: 75px;
+  border: 1px solid black;
+  margin: 0px;
+  justify-content: center;
+}
+
+.normalMove {
+  -webkit-box-shadow: 0 0 1px 3px #000 inset;
+  -moz-box-shadow: 0 0 1px 3px #000 inset;
+  box-shadow: 0 0 1px 3px #000 inset;
+}
+
+.killMove {
+  -webkit-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+  -moz-box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+  box-shadow: 0 0 1px 3px rgb(255, 0, 0) inset;
+}
+
+.turn {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.color_turn {
+  width: 75px;
+  height: 75px;
+  border: 1px solid black;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.row {
+  margin: 10px;
+}
+
+.tile {
+  display: flex;
+  width: 65px;
+  height: 65px;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+.modal-guts {
+
+  /* other stuff we already covered */
+
+  /* cover the modal */
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* spacing as needed */
+  padding: 20px 50px 20px 20px;
+
+  /* let it scroll */
+  overflow: auto;
+  
+}
+.backdrop {
+  position: fixed;
+  z-index: 1040;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  opacity: 0.5;
+}
+.overlay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 700px;
+  height: 200px;
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  /*width: 100px; /* Need a specific value to work */
+  background-color: white;
+  border-radius: 15px;
+  animation: blinker 1s cubic-bezier(0.5, 0, 1, 1) infinite alternate;
+}
+
+.promote_pieces {
+  width: 120px;
+  height: 120px;
+  margin: 10px;
+}
