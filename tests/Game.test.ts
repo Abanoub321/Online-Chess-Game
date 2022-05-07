@@ -221,7 +221,7 @@ describe('Game', () => {
         currentPlayer = game.currentPlayer;
         game.movePiece(currentPlayer!, 0, 0, 2, 0);
         currentPlayer = game.currentPlayer;
-        game.movePiece(currentPlayer!,4, 4, 3, 4);
+        game.movePiece(currentPlayer!, 4, 4, 3, 4);
         currentPlayer = game.currentPlayer;
         game.movePiece(currentPlayer!, 2, 0, 2, 4);
         currentPlayer = game.currentPlayer;
@@ -229,6 +229,104 @@ describe('Game', () => {
         currentPlayer = game.currentPlayer;
         game.movePiece(currentPlayer!, 2, 4, 3, 4);
         expect(game.status).toBe(GameStatus.BLACK_CHECKMATE)
+    })
+    it('should not accept moving any piece when checked if it not defending', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 4, 3, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 4, 4, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 3, 4, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 7, 5, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 7, 4, 4);
+        currentPlayer = game.currentPlayer;
+        expect(game.avialableMoves(currentPlayer!, 5, 7)).toEqual({
+            normal: [],
+            attack: []
+        });
+        expect(game.avialableMoves(currentPlayer!, 7, 3).normal.length).not.toBe(0);
+    })
+
+    it('should move only available pieces when checked', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 4, 3, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 4, 4, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 3, 4, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 7, 5, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 7, 4, 4);
+        currentPlayer = game.currentPlayer;
+        expect(game.avialableMoves(currentPlayer!, 7, 3)).toEqual({
+            normal: [{ row: 6, column: 4 }],
+            attack: []
+        });
+        expect(game.avialableMoves(currentPlayer!, 7, 5)).toEqual({
+            normal: [{ row: 6, column: 4 }],
+            attack: []
+        });
+        expect(game.avialableMoves(currentPlayer!, 7, 6)).toEqual({
+            normal: [{ row: 6, column: 4 }],
+            attack: []
+        });
+    })
+
+    it('should also be avail to kill if checked only', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 4, 3, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 4, 4, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 3, 4, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 7, 5, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 7, 4, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 7, 6, 6, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 4, 6, 4);
+        currentPlayer = game.currentPlayer;
+        expect(game.avialableMoves(currentPlayer!, 7, 3)).toEqual({
+            normal: [],
+            attack: [{ row: 6, column: 4 }]
+        });
+        expect(game.avialableMoves(currentPlayer!, 7, 5)).toEqual({
+            normal: [],
+            attack: [{ row: 6, column: 4 }]
+        });
+        expect(game.avialableMoves(currentPlayer!, 5, 7)).toEqual({
+            normal: [],
+            attack: []
+        });
+    })
+
+
+    it('should be avail to king escape if checked', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 1, 2, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 3, 4, 3);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 2, 2, 4, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 0, 5, 0);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 1, 6, 2);
+        currentPlayer = game.currentPlayer;
+        expect(game.board.getDefendAllies(currentPlayer.color).length).toBe(2);
     })
 
     it('should not continue if someone wins', () => {

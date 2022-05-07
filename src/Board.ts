@@ -145,55 +145,79 @@ export default class Board {
     }
     getDefendAllies = (color: string): Piece[] => {
         let defenders: Piece[] = [];
-        let kingIndex = this.pieces.findIndex((p) => p.type == types.king && p.color == color);
-        let king: King | any = this.pieces[kingIndex];
-        let location = `${king.column}${king.row}`;
-        let tiles: { [key: string]: Piece } = {};
-        this.pieces.forEach((p: Piece) => {
-            tiles[`${p.row}${p.column}`] = p;
-        });
         let allies = this.pieces.filter(p => p.color == color);
 
         for (let i = 0; i < allies.length; i++) {
             let ally: Piece = allies[i];
-            let row = ally.row;
-            let col = ally.column;
-            let moves = ally.getMoves(this.pieces);
-            for (let j = 0; j < moves.length; j++) {
-                let move = moves[j];
-                let newRow = parseInt(move.charAt(1));
-                let newCol = move[0];
-                ally.column = newCol;
-                ally.row = newRow;
-                if (!king.isThreatened(location, this.pieces, kingIndex)) {
-                    ally.row = row;
-                    ally.column = col;
-                    defenders.push(ally);
-                }
-                ally.row = row;
-                ally.column = col;
+            if (this.availFakeMoves(ally).length > 0){
+                defenders.push(ally);
+                continue;
             }
-            let killMoves = ally.getKillMoves(this.pieces);
-            for (let j = 0; j < killMoves.length; j++) {
-                let move = killMoves[j];
-                let newRow = parseInt(move.charAt(1));
-                let newCol = move[0];
-                if (tiles[`${newRow}${newCol}`] && tiles[`${newRow}${newCol}`].color != ally.color) {
-                    let tempPieces = this.pieces.filter(p => p.column != newCol && p.row != newRow);
-                    let kingIndex = tempPieces.findIndex((p) => p.type == types.king && p.color == ally.color);
-                    if (kingIndex == -1)
-                        continue;
-                    if (!king.isThreatened(location, tempPieces, kingIndex)) {
-                        ally.row = row;
-                        ally.column = col;
-                        defenders.push(ally);
-                    }
-                }
-                ally.row = row;
-                ally.column = col;
-            }
+            if(this.availFakeKillMoves(ally).length > 0)
+                defenders.push(ally);
         }
 
         return defenders;
+    }
+    availFakeMoves = (piece: Piece): { row: number, column: number }[] => {
+        let fakeMoves: { row: number, column: number }[] = []
+
+        let kingIndex = this.pieces.findIndex((p) => p.type == types.king && piece.color == p.color);
+        let king: King | any = this.pieces[kingIndex];
+
+        let row = piece.row;
+        let col = piece.column;
+        let moves = piece.getMoves(this.pieces);
+        for (let j = 0; j < moves.length; j++) {
+            let move = moves[j];
+            let newRow = parseInt(move.charAt(1));
+            let newCol = move[0];
+            piece.column = newCol;
+            piece.row = newRow;
+            if (!king.isThreatened(`${king.column}${king.row}`, this.pieces, kingIndex)) {
+                piece.row = row;
+                piece.column = col;
+                fakeMoves.push({
+                    row: newRow - 1,
+                    column: newCol.charCodeAt(0) - 65
+                })
+            }
+            piece.row = row;
+            piece.column = col;
+        }
+        return fakeMoves;
+    }
+    availFakeKillMoves = (piece: Piece): { row: number, column: number }[] => {
+        let fakeMoves: { row: number, column: number }[] = []
+
+        let kingIndex = this.pieces.findIndex((p) => p.type == types.king && piece.color == p.color);
+        let king: King | any = this.pieces[kingIndex];
+        let row = piece.row;
+        let col = piece.column;
+
+        let killMoves = piece.getKillMoves(this.pieces);
+        for (let j = 0; j < killMoves.length; j++) {
+            let move = killMoves[j];
+            let newRow = parseInt(move.charAt(1));
+            let newCol = move[0];
+
+            let tempPieces = this.pieces.filter(p => !(p.column == newCol && p.row == newRow));
+            let kingIndex = tempPieces.findIndex((p) => p.type == types.king && p.color == piece.color);
+            if (kingIndex == -1)
+                continue;
+            if (!king.isThreatened(`${king.column}${king.row}`, tempPieces, kingIndex)) {
+                piece.row = row;
+                piece.column = col;
+                fakeMoves.push({
+                    row: newRow - 1,
+                    column: newCol.charCodeAt(0) - 65
+                })
+            }
+
+            piece.row = row;
+            piece.column = col;
+        }
+
+        return fakeMoves;
     }
 }
