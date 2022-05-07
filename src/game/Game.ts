@@ -3,6 +3,9 @@ import Board from "../Board";
 import Player from "../player/Player";
 import GameStatus from "../GameStatusEnum";
 import color from "../ColorEnum";
+import Piece from "../Pieces/Piece";
+import types from "../TypeEnum";
+import Pawn from "../Pieces/Pawn";
 
 export default class Game {
 
@@ -41,18 +44,31 @@ export default class Game {
 
     avialableMoves(player: Player, x: number, y: number): { normal: Array<{ row: number, column: number }>, attack: Array<{ row: number, column: number }> } {
 
-        if (this.status !== GameStatus.STARTED)
+        if (this.status === GameStatus.WAITING_FOR_PLAYERS)
             throw new Error('Game not started');
+        if (this.status === GameStatus.WHITE_WON || this.status === GameStatus.BLACK_WON)
+            throw new Error('Game is over');
         if (player.color !== this.currentPlayer!.color)
             throw new Error('Player is not current player');
-        let piece = this.board.getBoard()[x ][y];
+        let piece = this.board.getBoard()[x][y];
+
         if (piece == null)
             throw new Error('Player should choose piece');
         if (piece.color !== player.color)
             throw new Error('Piece is not yours');
-
-        let normal = this.board.getPieceMoves(x, y)
-        let attack = this.board.getPieceAttackMoves(x, y);
+        let normal: { row: number, column: number }[], attack: { row: number, column: number }[];
+        normal = attack = [];
+        if (this.status === GameStatus.WHITE_CHECKMATE || this.status === GameStatus.BLACK_CHECKMATE) {
+            let defenders = this.board.getDefendAllies(piece.color);
+            let defendingPiece: Piece | undefined = defenders.find(p => p.row === x + 1 && p.column === String.fromCharCode(y + 65))
+            if (defendingPiece) {
+                normal = this.board.availFakeMoves(defendingPiece);
+                attack = this.board.availFakeKillMoves(defendingPiece);
+            }
+        } else {
+            normal = this.board.getPieceMoves(x, y)
+            attack = this.board.getPieceAttackMoves(x, y);
+        }
         return {
             normal,
             attack
@@ -62,13 +78,35 @@ export default class Game {
     movePiece(player: Player, row: number, column: number, newRow: number, newColumn: number) {
         if (player.color !== this.currentPlayer!.color)
             throw new Error('Player is not current player');
-        if (this.board.getBoard()[row][column].color !== player.color)
+        let piece = this.board.getBoard()[row][column];
+        if (piece.color !== player.color)
             throw new Error('Piece is not yours');
         this.board.movePiece(row, column, newRow, newColumn);
-        if (this.board.checkIfLost(this.currentPlayer?.color === color.white ? color.black : color.white)) {
-            this.status = this.currentPlayer?.color === color.white ? GameStatus.WHITE_WON : GameStatus.BLACK_WON;
+        if (this.board.isKingThreatened(this.currentPlayer?.color === color.white ? color.black : color.white)) {
+            this.status = this.currentPlayer?.color != 'white' ? GameStatus.WHITE_CHECKMATE : GameStatus.BLACK_CHECKMATE;
+            if (this.board.checkIfLost(this.currentPlayer?.color === color.white ? color.black : color.white)) {
+                this.status = this.currentPlayer?.color === color.white ? GameStatus.WHITE_WON : GameStatus.BLACK_WON;
+            }
+        }
+        else {
+            this.status = GameStatus.STARTED;
+        }
+        if (piece.type == types.pawn) {
+            let pawn: Pawn | undefined = this.board.pieces.find((p: Piece) => p.row === newRow + 1 && p.column === String.fromCharCode(newColumn + 65)) as Pawn;
+            if (pawn.canBePromoted) {
+                this.status = pawn.color == color.white ? GameStatus.WHITE_PROMOTION : GameStatus.BLACK_PROMOTION;
+            }
+            else
+                this.swapTurns();
         } else
             this.swapTurns();
+    }
+    promotePawn(player: Player, promoteTo: string) {
+        let color = player.color;
+        let pawnIndex: number = this.board.pieces.findIndex((p: Piece) => p.color === color && p.type === types.pawn && (p as Pawn).canBePromoted);
+        this.board.promotePawn(pawnIndex,promoteTo);
+        this.status = GameStatus.STARTED;
+        this.swapTurns();
     }
 
     swapTurns() {
