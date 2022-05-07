@@ -54,7 +54,7 @@ export const GameRoute = () => {
   return (
     <>
       <div className='Game_Page' >
-        <h1>{gameStatus === 'WAITING_FOR_PLAYERS' ? gameStatus.toLowerCase().split('_').join(' ') : null}</h1>
+        <h1>{gameStatus === 'WAITING_FOR_PLAYERS' || gameStatus === 'WHITE WON' || gameStatus === 'BLACK WON' ? gameStatus.toLowerCase().split('_').join(' ') : null}</h1>
         <div className='Game_layer'>
           <NumberColumn currentColor={playerColor} />
           <GameBoard
