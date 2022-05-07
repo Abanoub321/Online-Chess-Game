@@ -351,4 +351,53 @@ describe('Game', () => {
         expect(() => game.movePiece(currentPlayer!, 5, 0, 4, 1)).toThrow();
     })
 
+    it('should be able to promote pawn', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 1, 3, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 2, 4, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 3, 1, 4, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 1, 5, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 2, 5, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 7, 1, 5, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 5, 1, 6, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 7, 3, 5, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 1, 7, 1);
+        expect(game.status).toBe('WHITE_PROMOTE')
+    })
+
+    it('should promote pawn to type', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 1, 3, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 2, 4, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 3, 1, 4, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 1, 5, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 2, 5, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 7, 1, 5, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 5, 1, 6, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 7, 3, 5, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 1, 7, 1);
+        game.promotePawn(currentPlayer!, 'queen');
+        expect(game.board.getBoard()[7][1].type).toBe('queen');
+    })
+
 });

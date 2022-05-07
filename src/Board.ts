@@ -149,11 +149,11 @@ export default class Board {
 
         for (let i = 0; i < allies.length; i++) {
             let ally: Piece = allies[i];
-            if (this.availFakeMoves(ally).length > 0){
+            if (this.availFakeMoves(ally).length > 0) {
                 defenders.push(ally);
                 continue;
             }
-            if(this.availFakeKillMoves(ally).length > 0)
+            if (this.availFakeKillMoves(ally).length > 0)
                 defenders.push(ally);
         }
 
@@ -219,5 +219,15 @@ export default class Board {
         }
 
         return fakeMoves;
+    }
+    promotePawn(index: number, promoteTo: string) {
+        if (promoteTo === types.bishop)
+            this.pieces[index] = new Bishop(this.pieces[index].color, this.pieces[index].column, this.pieces[index].row);
+        else if (promoteTo === types.knight)
+            this.pieces[index] = new Knight(this.pieces[index].color, this.pieces[index].column, this.pieces[index].row);
+        else if (promoteTo === types.queen)
+            this.pieces[index] = new Queen(this.pieces[index].color, this.pieces[index].column, this.pieces[index].row);
+        else if (promoteTo === types.rook)
+            this.pieces[index] = new Rook(this.pieces[index].color, this.pieces[index].column, this.pieces[index].row);
     }
 }
