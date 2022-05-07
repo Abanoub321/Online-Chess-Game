@@ -1,17 +1,27 @@
 import '../../App.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Cell } from "./Cell";
 import { socket } from '../../services/socket';
 
 export const GameBoard = (props: any) => {
-    const { board, gameId } = props;
+    const { board, gameId, gameStatus } = props;
 
 
     const [normalMoves, setNormalMoves] = useState({} as any);
     const [attackMoves, setAttackMoves] = useState({} as any);
     const [selectedCell, setSelectedCell] = useState({} as any);
-
+    const [checked, setChecked] = useState('');
     const { playerColor, currentPlayerTurn } = props;
+
+    useEffect(() => {
+        if (gameStatus === 'BLACK_CHECKMATE')
+            setChecked('black');
+        else if (gameStatus === 'WHITE_CHECKMATE')
+            setChecked('white');
+        else {
+            setChecked('')
+        }
+    })
 
     const buildBoard = () => {
         let newBoard = [];
@@ -25,6 +35,10 @@ export const GameBoard = (props: any) => {
                     if (normalMoves[`${i},${j}`] == true)
                         normalFlag = true
                     if (attackMoves[`${i},${j}`] == true)
+                        AttackFlag = true
+                    if (checked == 'white' && i == 0 && j == 4)
+                        AttackFlag = true
+                    if (checked == 'black' && i == 7 && j == 4)
                         AttackFlag = true
                     newBoard.push(<Cell
                         color={(i + j) % 2 == 0 ? 'white' : 'grey'}
@@ -48,6 +62,10 @@ export const GameBoard = (props: any) => {
                     if (normalMoves[`${i},${j}`] == true)
                         normalFlag = true
                     if (attackMoves[`${i},${j}`] == true)
+                        AttackFlag = true
+                    if (checked == 'white' && i == 0 && j == 4)
+                        AttackFlag = true
+                    if (checked == 'black' && i == 7 && j == 4)
                         AttackFlag = true
                     newBoard.push(<Cell
                         color={(i + j) % 2 == 0 ? 'white' : 'grey'}
