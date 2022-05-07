@@ -1,4 +1,5 @@
 import Game from "../src/game/Game";
+import GameStatus from "../src/GameStatusEnum";
 import Player from "../src/player/Player";
 
 
@@ -157,9 +158,78 @@ describe('Game', () => {
         currentPlayer = game.currentPlayer;
         game.movePiece(currentPlayer!, 2, 5, 6, 5);
 
-        expect(game.status).toBe('WHITE WON');
+        expect(game.board.getDefendAllies('black')).toEqual([]);
     })
 
+    it('should be checked if Queen normal checks', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 4, 3, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 4, 4, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 3, 4, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 7, 5, 7);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 7, 6, 5);
+        let defenders = game.board.getDefendAllies('black');
+        expect(defenders.length).toBe(1);
+        expect(game.status).toBe(GameStatus.BLACK_CHECKMATE)
+    })
+
+    it('should be checked if Knight normal check', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 1, 2, 2);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 3, 4, 3);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 2, 2, 4, 1);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 0, 5, 0);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 4, 1, 6, 2);
+        expect(game.status).toBe(GameStatus.BLACK_CHECKMATE)
+    })
+
+    it('should be checked if bishop normal check', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 3, 3, 3);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 4, 5, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 4, 3, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 3, 4, 3);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 5, 4, 1);
+        expect(game.status).toBe(GameStatus.BLACK_CHECKMATE)
+    })
+
+    it('should be checked if rook normal check', () => {
+        let player2 = new Player('Y');
+        game.joinGame(player2);
+        let currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 1, 0, 3, 0);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 6, 4, 4, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 0, 0, 2, 0);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!,4, 4, 3, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 2, 0, 2, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 7, 6, 5, 4);
+        currentPlayer = game.currentPlayer;
+        game.movePiece(currentPlayer!, 2, 4, 3, 4);
+        expect(game.status).toBe(GameStatus.BLACK_CHECKMATE)
+    })
 
     it('should not continue if someone wins', () => {
         let player2 = new Player('Y');

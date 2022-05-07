@@ -29,7 +29,7 @@ export default class Knight extends Piece {
         this.patterns.forEach(pattern => {
             const newRow = this.row + pattern.row;
             const newColumn = this.column.charCodeAt(0) + pattern.column;
-            if (newRow >= 1 && newRow < 8 && String.fromCharCode(newColumn) >= 'A' && String.fromCharCode(newColumn) < 'I') {
+            if (newRow >= 1 && newRow <= 8 && String.fromCharCode(newColumn) >= 'A' && String.fromCharCode(newColumn) < 'I') {
                 if (!locations[String.fromCharCode(newColumn) + newRow]) {
                     const newPosition = String.fromCharCode(newColumn) + newRow;
                     moves.push(newPosition);
@@ -65,7 +65,7 @@ export default class Knight extends Piece {
         this.patterns.forEach(pattern => {
             const newRow = this.row + pattern.row;
             const newColumn = this.column.charCodeAt(0) + pattern.column;
-            if (newRow >= 1 && newRow < 8 && String.fromCharCode(newColumn) >= 'A' && String.fromCharCode(newColumn) < 'I') {
+            if (newRow >= 1 && newRow <= 8 && String.fromCharCode(newColumn) >= 'A' && String.fromCharCode(newColumn) < 'I') {
                 if (locations[String.fromCharCode(newColumn) + newRow]) {
                     const newPosition = String.fromCharCode(newColumn) + newRow;
                     moves.push(newPosition);

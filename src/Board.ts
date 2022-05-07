@@ -1,4 +1,6 @@
 import color from "./ColorEnum";
+import Game from "./game/Game";
+import GameStatus from "./GameStatusEnum";
 import Bishop from "./Pieces/Bishop";
 import King from "./Pieces/King";
 import Knight from "./Pieces/Knight";
@@ -126,13 +128,72 @@ export default class Board {
         }
     }
 
-    checkIfLost(color: string): boolean {
+    isKingThreatened(color: string): boolean {
         let kingIndex = this.pieces.findIndex((p) => p.type == types.king && p.color == color);
         let king: King | any = this.pieces[kingIndex];
-        let kingMoves = king.getMoves(this.pieces);
         let location = `${king.column}${king.row}`;
-        if (king.isThreatened(location, this.pieces, kingIndex) && kingMoves.length == 0)
+        if (king.isThreatened(location, this.pieces, kingIndex)) {
             return true;
+        }
         return false;
+    }
+
+    checkIfLost(color: string): boolean {
+        if (this.getDefendAllies(color).length > 0)
+            return false;
+        return true
+    }
+    getDefendAllies = (color: string): Piece[] => {
+        let defenders: Piece[] = [];
+        let kingIndex = this.pieces.findIndex((p) => p.type == types.king && p.color == color);
+        let king: King | any = this.pieces[kingIndex];
+        let location = `${king.column}${king.row}`;
+        let tiles: { [key: string]: Piece } = {};
+        this.pieces.forEach((p: Piece) => {
+            tiles[`${p.row}${p.column}`] = p;
+        });
+        let allies = this.pieces.filter(p => p.color == color);
+
+        for (let i = 0; i < allies.length; i++) {
+            let ally: Piece = allies[i];
+            let row = ally.row;
+            let col = ally.column;
+            let moves = ally.getMoves(this.pieces);
+            for (let j = 0; j < moves.length; j++) {
+                let move = moves[j];
+                let newRow = parseInt(move.charAt(1));
+                let newCol = move[0];
+                ally.column = newCol;
+                ally.row = newRow;
+                if (!king.isThreatened(location, this.pieces, kingIndex)) {
+                    ally.row = row;
+                    ally.column = col;
+                    defenders.push(ally);
+                }
+                ally.row = row;
+                ally.column = col;
+            }
+            let killMoves = ally.getKillMoves(this.pieces);
+            for (let j = 0; j < killMoves.length; j++) {
+                let move = killMoves[j];
+                let newRow = parseInt(move.charAt(1));
+                let newCol = move[0];
+                if (tiles[`${newRow}${newCol}`] && tiles[`${newRow}${newCol}`].color != ally.color) {
+                    let tempPieces = this.pieces.filter(p => p.column != newCol && p.row != newRow);
+                    let kingIndex = tempPieces.findIndex((p) => p.type == types.king && p.color == ally.color);
+                    if (kingIndex == -1)
+                        continue;
+                    if (!king.isThreatened(location, tempPieces, kingIndex)) {
+                        ally.row = row;
+                        ally.column = col;
+                        defenders.push(ally);
+                    }
+                }
+                ally.row = row;
+                ally.column = col;
+            }
+        }
+
+        return defenders;
     }
 }

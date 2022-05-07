@@ -41,7 +41,7 @@ export default class Game {
 
     avialableMoves(player: Player, x: number, y: number): { normal: Array<{ row: number, column: number }>, attack: Array<{ row: number, column: number }> } {
 
-        if (this.status !== GameStatus.STARTED)
+        if (this.status === GameStatus.WAITING_FOR_PLAYERS)
             throw new Error('Game not started');
         if (player.color !== this.currentPlayer!.color)
             throw new Error('Player is not current player');
@@ -65,10 +65,17 @@ export default class Game {
         if (this.board.getBoard()[row][column].color !== player.color)
             throw new Error('Piece is not yours');
         this.board.movePiece(row, column, newRow, newColumn);
-        if (this.board.checkIfLost(this.currentPlayer?.color === color.white ? color.black : color.white)) {
-            this.status = this.currentPlayer?.color === color.white ? GameStatus.WHITE_WON : GameStatus.BLACK_WON;
-        } else
-            this.swapTurns();
+        if(this.board.isKingThreatened(this.currentPlayer?.color === color.white ? color.black : color.white))
+        {
+            this.status = this.currentPlayer?.color != 'white' ? GameStatus.WHITE_CHECKMATE : GameStatus.BLACK_CHECKMATE;
+            if (this.board.checkIfLost(this.currentPlayer?.color === color.white ? color.black : color.white)) {
+                this.status = this.currentPlayer?.color === color.white ? GameStatus.WHITE_WON : GameStatus.BLACK_WON;
+            } 
+        }
+        else {
+            this.status = GameStatus.STARTED;
+        }
+        this.swapTurns();
     }
 
     swapTurns() {
