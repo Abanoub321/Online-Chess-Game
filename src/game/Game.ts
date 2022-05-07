@@ -44,6 +44,8 @@ export default class Game {
 
         if (this.status === GameStatus.WAITING_FOR_PLAYERS)
             throw new Error('Game not started');
+        if (this.status === GameStatus.WHITE_WON || this.status === GameStatus.BLACK_WON)
+            throw new Error('Game is over');
         if (player.color !== this.currentPlayer!.color)
             throw new Error('Player is not current player');
         let piece = this.board.getBoard()[x][y];
