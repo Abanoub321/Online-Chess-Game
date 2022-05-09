@@ -28,3 +28,7 @@ jobs:
       - node/run-tests:
           cache-path: node_modules
           override-ci-command: npm run test
+workflows:
+  # Run the build and test workflow
+  - build
+  - test
