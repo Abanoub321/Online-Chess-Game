@@ -5,7 +5,7 @@ export const LetterRow = (props: any) => {
     const currentColor = props.currentColor;
     const renderRow = () => {
         let row = [];
-        if (currentColor === 'black')
+        if (currentColor === 'white')
             for (let i = 65; i <= 72; i++)
                 row.push(<Col className="tile" style={{margin:0,padding:10,marginLeft:40}}><h4>{String.fromCharCode(i)}</h4></Col>)
         else
