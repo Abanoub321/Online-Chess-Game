@@ -1,5 +1,6 @@
 import { isCastlingAvailable } from "../services/CheckCastling";
 import Piece from "./Piece";
+import Rook from "./Rook";
 
 
 export default class King extends Piece {
@@ -63,13 +64,19 @@ export default class King extends Piece {
         let row = parseInt(position.charAt(1));
         let column = position.charAt(0);
         if (this.isValidMove(this.getMoves(pieces), position)) {
-            if (column == 'G') {
-                let rook = pieces.find(piece => piece.column == 'H' && piece.row == this.row && piece.type == 'rook' && this.color == piece.color);
-                rook!.column = 'F';
-            }
-            else if(column == 'C') {
-                let rook = pieces.find(piece =>  piece.column == 'A' && piece.row == this.row && piece.type == 'rook' && this.color == piece.color);
-                rook!.column = 'D';
+            if ((column == 'G' || column == 'C') && (row == 1 || row == 8) && !this.hasMoved) {
+                let rook = pieces.find(
+                    piece =>
+                        (column == 'G' ? piece.column == 'H' : piece.column == 'A')
+                        && piece.row == row
+                        && piece.type == 'rook'
+                        && this.color == piece.color
+                ) as Rook;
+
+                if (!rook.hasMoved) {
+                    rook.column = column == 'G' ? 'F' : 'D';
+                    rook.hasMoved = true;
+                }
             }
             this.row = row;
             this.column = column;
