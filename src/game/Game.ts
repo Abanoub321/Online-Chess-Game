@@ -15,12 +15,16 @@ export default class Game {
     player2: Player = null as any;
     status: string
     currentPlayer: Player | undefined;
+    gameTime: number;
+    incrementTime: number = 0;
 
-    constructor(player: Player) {
+    constructor(player: Player, gameTime: number = 10 * 60 * 1000, incrementTime: number = 0) {
         this.id = uuid.v4();
         this.board = new Board();
         this.player1 = player;
         this.status = GameStatus.WAITING_FOR_PLAYERS;
+        this.gameTime = gameTime;
+        this.incrementTime = incrementTime;
     }
 
     joinGame(player2: Player) {

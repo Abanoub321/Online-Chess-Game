@@ -5,7 +5,15 @@ export const HomeRoute = (props: any) => {
     const { socket } = props;
 
     return (
-        <div>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 50
+            }}
+        >
             <CreateGameButton socket={socket} />
             <GameCardsList socket={socket} />
         </div>

@@ -25,9 +25,11 @@ io.on("connection", (socket) => {
     let joinedPlayer = new Player(socket.id);
     players[socket.id] = joinedPlayer;
 
-    let availableGames = Object.keys(games).filter(gameId => {
-        return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
-    });
+    let availableGames = Object.values(games).filter((game: Game) => game.status === GameStatus.WAITING_FOR_PLAYERS).map((game: Game) => ({
+        id: game.id,
+        gameTime: game.gameTime,
+        increment: game.incrementTime,
+    }));
     socket.emit('gameList', availableGames);
 
     GamePreparationHandler(io, socket, games, players);

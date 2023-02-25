@@ -8,10 +8,10 @@ export default class Player {
     constructor(name: string) {
         this.name = name;
     }
-    createNewGame() {
+    createNewGame(gameTime: number, incrementTime: number) {
         if (this.game)
             throw new Error('Player is already in a game');
-        this.game = new Game(this);
+        this.game = new Game(this, gameTime, incrementTime);
     }
     joinGame(game: Game) {
         if (this.game)

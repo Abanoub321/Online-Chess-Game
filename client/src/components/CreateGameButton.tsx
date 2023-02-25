@@ -1,13 +1,18 @@
+import { useState } from 'react';
+import Modal from 'react-overlays/Modal';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button'
+import { GameTimesModal } from './ModalComponents/GameTimeModal';
 
 export const CreateGameButton = (props: any) => {
-
+    const [show, setShow] = useState(false);
     const { socket } = props;
     const navigate = useNavigate();
-    const CreateGame = (e: Event | any) => {
-        e.preventDefault();
-        socket.emit('create game', (response: any) => {
+    const toggleModal = () => {
+        setShow(!show);
+    }
+    const CreateGame = (gameTime: number, incremental: number) => {
+        socket.emit('create game', gameTime*60*1000, incremental, (response: any) => {
             //if ok navigate to game
             if (response.status == 'OK') {
                 navigate(`/game/${response.gameId}`, {
@@ -22,8 +27,25 @@ export const CreateGameButton = (props: any) => {
         });
     }
     return (
-        <Button variant="primary" size="lg" onClick={CreateGame}>
-            Create Game
-        </Button>
+        <>
+            <Button variant="primary" size="lg" onClick={toggleModal}
+                style={{
+                    margin: 15
+                }}
+            >
+                Create Game
+            </Button>
+            <Modal
+                show={show}
+                onHide={() => setShow(false)}
+                aria-labelledby="modal-label"
+                enforceFocus
+                className='modal-guts'
+            >
+                <GameTimesModal
+                    onclick={CreateGame}
+                />
+            </Modal>
+        </>
     );
 };

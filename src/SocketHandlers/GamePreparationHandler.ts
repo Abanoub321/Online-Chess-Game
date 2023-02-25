@@ -1,10 +1,11 @@
 import GameStatus from '../GameStatusEnum';
+import Player from '../player/Player';
 
-const GamePreparationHandler = (io: any, socket: any, games: any, players: any) => {
-    const createGame = (cb: Function) => {
+const GamePreparationHandler = (io: any, socket: any, games: any, players: { [id: string]: Player }) => {
+    const createGame = (gameTime: number, incrementTime: number, cb: Function) => {
 
         try {
-            players[socket.id].createNewGame();
+            players[socket.id].createNewGame(gameTime, incrementTime);
             let game = players[socket.id].game;
             games[game!.id] = game!;
             socket.join(`room-${game!.id}`);
