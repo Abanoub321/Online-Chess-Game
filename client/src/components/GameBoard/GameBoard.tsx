@@ -4,7 +4,7 @@ import { Cell } from "./Cell";
 import { socket } from '../../services/socket';
 
 export const GameBoard = (props: any) => {
-    const { board, gameId, gameStatus } = props;
+    const { board, gameId, gameStatus, kingsPosition } = props;
 
 
     const [normalMoves, setNormalMoves] = useState({} as any);
@@ -21,7 +21,7 @@ export const GameBoard = (props: any) => {
         else {
             setChecked('')
         }
-    })
+    }, [gameStatus])
 
     const buildBoard = () => {
         let newBoard = [];
@@ -36,9 +36,9 @@ export const GameBoard = (props: any) => {
                         normalFlag = true
                     if (attackMoves[`${i},${j}`] == true)
                         AttackFlag = true
-                    if (checked == 'white' && i == 0 && j == 4)
+                    if (checked == 'white' && kingsPosition.whiteKing.row == i + 1 && kingsPosition.whiteKing.column == String.fromCharCode(65 + j))
                         AttackFlag = true
-                    if (checked == 'black' && i == 7 && j == 4)
+                    if (checked == 'black' && kingsPosition.blackKing.row == i + 1 && kingsPosition.blackKing.column == String.fromCharCode(65 + j))
                         AttackFlag = true
                     newBoard.push(<Cell
                         color={(i + j) % 2 == 0 ? 'white' : 'grey'}
@@ -63,9 +63,9 @@ export const GameBoard = (props: any) => {
                         normalFlag = true
                     if (attackMoves[`${i},${j}`] == true)
                         AttackFlag = true
-                    if (checked == 'white' && i == 0 && j == 4)
+                    if (checked == 'white' && kingsPosition.whiteKing.row == i + 1 && kingsPosition.whiteKing.column == String.fromCharCode(65 + j))
                         AttackFlag = true
-                    if (checked == 'black' && i == 7 && j == 4)
+                    if (checked == 'black' && kingsPosition.blackKing.row == i + 1 && kingsPosition.blackKing.column == String.fromCharCode(65 + j))
                         AttackFlag = true
                     newBoard.push(<Cell
                         color={(i + j) % 2 == 0 ? 'white' : 'grey'}

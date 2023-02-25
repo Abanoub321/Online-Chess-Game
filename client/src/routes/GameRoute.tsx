@@ -16,6 +16,13 @@ export const GameRoute = () => {
   const [gameStatus, setGameStatus] = useState(location.state.gameStatus);
   const [currentPlayerTurn, setCurrentPlayerTurn] = useState('white');
   const [playerColor, setPlayerColor] = useState('white');
+  const [kingsPosition, setKingsPosition] = useState({ whiteKing: {
+    row: 0,
+    column: 4
+  }, blackKing: {
+    row: 7,
+    column: 4
+  } });
   const [gameBoard, setGameBoard] = useState(location.state.board);
   const [show, setShow] = useState(false);
   const gameId = location.state.gameId;
@@ -39,11 +46,11 @@ export const GameRoute = () => {
     setPlayerColor(data.playerColor);
   })
   socket.once('move-made', (response: any) => {
-    const { gameStatus, currentPlayerTurn, board } = response;
-
+    const { gameStatus, currentPlayerTurn, board,kingsPosition } = response;
     setGameStatus(gameStatus);
     setCurrentPlayerTurn(currentPlayerTurn);
     setGameBoard(board);
+    setKingsPosition(kingsPosition);    
   })
   const promotePawn = (type:string) => {
     socket.emit('promote', gameId, socket.id, type, (response: any) => {
@@ -63,6 +70,7 @@ export const GameRoute = () => {
             currentPlayerTurn={currentPlayerTurn}
             playerColor={playerColor}
             gameId={gameId}
+            kingsPosition={kingsPosition}
           />
           <Turn color={currentPlayerTurn} />
         </div>

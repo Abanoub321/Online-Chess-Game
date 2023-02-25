@@ -33,6 +33,7 @@ const GameHandler = (io: any, socket: any, games: any, players: any) => {
                 board: game?.board?.getBoard(),
                 gameStatus: game!.status,
                 currentPlayerTurn: game!.currentPlayer.color,
+                kingsPosition: game?.board?.getKingsPosition()
             });
         } catch (error: Error | any) {
             console.log(error.message);

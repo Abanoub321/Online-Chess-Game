@@ -230,4 +230,21 @@ export default class Board {
         else if (promoteTo === types.rook)
             this.pieces[index] = new Rook(this.pieces[index].color, this.pieces[index].column, this.pieces[index].row);
     }
+
+    getKingsPosition(){
+        let whiteKingIndex = this.pieces.findIndex((p) => p.type == types.king && p.color == 'white');
+        let blackKingIndex = this.pieces.findIndex((p) => p.type == types.king && p.color == 'black');
+        let whiteKing: King | any = this.pieces[whiteKingIndex];
+        let blackKing: King | any = this.pieces[blackKingIndex];
+        return {
+            whiteKing: {
+                row: whiteKing.row,
+                column: whiteKing.column
+            },
+            blackKing: {
+                row: blackKing.row,
+                column: blackKing.column
+            }
+        }
+    }
 }
