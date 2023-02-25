@@ -4,7 +4,7 @@
   "description": "Chess Game using tdd approach",
   "main": "index.js",
   "scripts": {
-    "build": "npm install && tsc",
+    "build": "tsc",
     "start": "node ./build/index.js",
     "test": "jest"
   },

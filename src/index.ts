@@ -1,4 +1,4 @@
-import { Server } from "socket.io";
+import { Server ,Socket} from "socket.io";
 const uuid = require("uuid");
 import GamePreparationHandler from "./SocketHandlers/GamePreparationHandler";
 import GameHandler from "./SocketHandlers/GameHandler";
@@ -33,16 +33,27 @@ io.on("connection", (socket) => {
     GamePreparationHandler(io, socket, games, players);
     GameHandler(io, socket, games, players);
 
-    socket.on("disconnecting", (reason) => {
-
-        for (const room of socket.rooms) {
-            if (room !== socket.id) {
-                socket.to(room).emit("player left", socket.id);
-
-                if (games[room.replace("room-", "")].status === GameStatus.STARTED) {
-                    let leftPlayer = players[socket.id];
-                    games[room.split("-")[1]].status = leftPlayer.color === 'white' ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
-                    delete games[room];
+    socket.on("disconnect", (reason) => {
+        console.log("disconnected", socket.id)
+        const game = Object.values(games).find((game: any) => game.player1.name === socket.id || game.player2.name === socket.id);
+        if (game) {
+            if (game.status === GameStatus.STARTED) {
+                let leftPlayer = players[socket.id];
+                games[game.id].status = leftPlayer.color === 'white' ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+                io.to(`room-${games[game.id].id}`).emit('game-ended', {
+                    gameStatus: games[game.id].status,
+                    winner: games[game.id].status === GameStatus.WHITE_WON ? 'white' : 'black'
+                });
+            }
+            else {
+                delete games[game.id];
+                
+                let availableGames = Object.keys(games).filter(gameId => {
+                    return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
+                });
+                
+                for(let player of Object.keys(players)){
+                    io.to(player).emit('gameList', availableGames);
                 }
             }
         }
