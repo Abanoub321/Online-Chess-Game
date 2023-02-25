@@ -36,6 +36,7 @@ io.on("connection", (socket) => {
     GameHandler(io, socket, games, players);
 
     socket.on("disconnect", (reason) => {
+        //should clear all running intervals
         console.log("disconnected", socket.id)
         const game = Object.values(games).find((game: any) => game.player1.name === socket.id || game.player2.name === socket.id);
         if (game) {

@@ -127,6 +127,7 @@ export default class Game {
     }
 
     swapTurns() {
+        //should check if time is up too
         clearInterval(this.currentPlayer!.timeIntervalId!);
         this.clockHandler(this.currentPlayer!, this.incrementTime, true);
         this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
