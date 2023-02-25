@@ -1,5 +1,6 @@
 import GameStatus from '../GameStatusEnum';
 import Player from '../player/Player';
+import handleClocks from '../services/IOClockHandler';
 
 const GamePreparationHandler = (io: any, socket: any, games: any, players: { [id: string]: Player }) => {
     const createGame = (gameTime: number, incrementTime: number, cb: Function) => {
@@ -15,9 +16,11 @@ const GamePreparationHandler = (io: any, socket: any, games: any, players: { [id
                 board: game?.board?.getBoard(),
                 gameStatus: game!.status
             });
-            let availableGames = Object.keys(games).filter(gameId => {
-                return games[gameId].status === GameStatus.WAITING_FOR_PLAYERS;
-            });
+            let availableGames = Object.values(games).filter((game: any) => game.status === GameStatus.WAITING_FOR_PLAYERS).map((game: any) => ({
+                id: game.id,
+                gameTime: game.gameTime,
+                increment: game.incrementTime,
+            }));
             socket.broadcast.emit('gameList', availableGames);
         } catch (error: Error | any) {
             console.log(error);
@@ -34,6 +37,7 @@ const GamePreparationHandler = (io: any, socket: any, games: any, players: { [id
             let game = games[gameId];
             players[socket.id].joinGame(game!);
             socket.join(`room-${game?.id}`);
+            handleClocks(io, game);
 
             cb({
                 status: "OK",

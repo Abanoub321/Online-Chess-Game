@@ -6,6 +6,7 @@ import color from "../ColorEnum";
 import Piece from "../Pieces/Piece";
 import types from "../TypeEnum";
 import Pawn from "../Pieces/Pawn";
+import { handleClock } from "../services/clockHandler";
 
 export default class Game {
 
@@ -17,6 +18,8 @@ export default class Game {
     currentPlayer: Player | undefined;
     gameTime: number;
     incrementTime: number = 0;
+    gameIntervalId: NodeJS.Timeout | undefined = undefined;
+
 
     constructor(player: Player, gameTime: number = 10 * 60 * 1000, incrementTime: number = 0) {
         this.id = uuid.v4();
@@ -25,12 +28,14 @@ export default class Game {
         this.status = GameStatus.WAITING_FOR_PLAYERS;
         this.gameTime = gameTime;
         this.incrementTime = incrementTime;
+        player.currentGameTime = gameTime;
     }
 
     joinGame(player2: Player) {
         if (this.status !== GameStatus.WAITING_FOR_PLAYERS)
             throw new Error('Game is not waiting for players');
         this.player2 = player2;
+        player2.currentGameTime = this.gameTime;
         this.status = GameStatus.STARTED;
         this.assignColors();
         this.assignCurrentPlayer();
@@ -122,6 +127,15 @@ export default class Game {
     }
 
     swapTurns() {
+        clearInterval(this.currentPlayer!.timeIntervalId!);
+        this.clockHandler(this.currentPlayer!, this.incrementTime, true);
         this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
+        if (this.currentPlayer.currentGameTime > 0)
+            this.clockHandler(this.currentPlayer, this.incrementTime, false);
+    }
+
+    clockHandler(player: Player, increment: number, stopTimer: boolean) {
+        let timeIntervalId = handleClock(player, increment, stopTimer);
+        this.currentPlayer!.timeIntervalId = timeIntervalId;
     }
 }

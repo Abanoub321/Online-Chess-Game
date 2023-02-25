@@ -5,6 +5,8 @@ export default class Player {
     name: string;
     color: string | undefined;
     game: Game | undefined;
+    currentGameTime: number = 0;
+    timeIntervalId: NodeJS.Timeout | undefined = undefined;
     constructor(name: string) {
         this.name = name;
     }

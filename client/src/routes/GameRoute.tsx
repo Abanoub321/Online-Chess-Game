@@ -8,6 +8,7 @@ import { Turn } from '../components/Turn';
 import { NumberColumn } from '../components/GameBoard/NumberColumn';
 import { LetterRow } from '../components/GameBoard/LetterRow';
 import { ModalMatcher } from '../components/ModalComponents/ModalMatcher';
+import { ClockComponent } from '../components/GameBoard/ClockComponent';
 
 
 
@@ -16,13 +17,16 @@ export const GameRoute = () => {
   const [gameStatus, setGameStatus] = useState(location.state.gameStatus);
   const [currentPlayerTurn, setCurrentPlayerTurn] = useState('white');
   const [playerColor, setPlayerColor] = useState('white');
-  const [kingsPosition, setKingsPosition] = useState({ whiteKing: {
-    row: 0,
-    column: 4
-  }, blackKing: {
-    row: 7,
-    column: 4
-  } });
+  const [kingsPosition, setKingsPosition] = useState({
+    whiteKing: {
+      row: 0,
+      column: 4
+    }, blackKing: {
+      row: 7,
+      column: 4
+    }
+  });
+  
   const [gameBoard, setGameBoard] = useState(location.state.board);
   const [show, setShow] = useState(false);
   const gameId = location.state.gameId;
@@ -33,7 +37,7 @@ export const GameRoute = () => {
       setShow(true);
     else if (gameStatus === 'BLACK_PROMOTE' && playerColor === 'black')
       setShow(true);
-  },[gameStatus])
+  }, [gameStatus])
 
   socket.on('gameStarted', data => {
     const { gameStatus, currentPlayerTurn } = data;
@@ -46,11 +50,11 @@ export const GameRoute = () => {
     setPlayerColor(data.playerColor);
   })
   socket.once('move-made', (response: any) => {
-    const { gameStatus, currentPlayerTurn, board,kingsPosition } = response;
+    const { gameStatus, currentPlayerTurn, board, kingsPosition } = response;
     setGameStatus(gameStatus);
     setCurrentPlayerTurn(currentPlayerTurn);
     setGameBoard(board);
-    setKingsPosition(kingsPosition);    
+    setKingsPosition(kingsPosition);
   })
 
   socket.on('game-ended', (response: any) => {
@@ -58,7 +62,8 @@ export const GameRoute = () => {
     setGameStatus(gameStatus);
   })
 
-  const promotePawn = (type:string) => {
+  
+  const promotePawn = (type: string) => {
     socket.emit('promote', gameId, socket.id, type, (response: any) => {
       console.log(response);
     });
@@ -78,7 +83,10 @@ export const GameRoute = () => {
             gameId={gameId}
             kingsPosition={kingsPosition}
           />
-          <Turn color={currentPlayerTurn} />
+          {/* <Turn color={currentPlayerTurn} /> */}
+          <ClockComponent playerColor={playerColor}>
+            <Turn color={currentPlayerTurn} />
+          </ClockComponent>
         </div>
 
         <LetterRow currentColor={playerColor} />
