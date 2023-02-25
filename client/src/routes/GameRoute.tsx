@@ -52,6 +52,12 @@ export const GameRoute = () => {
     setGameBoard(board);
     setKingsPosition(kingsPosition);    
   })
+
+  socket.on('game-ended', (response: any) => {
+    const { gameStatus, winner } = response;
+    setGameStatus(gameStatus);
+  })
+
   const promotePawn = (type:string) => {
     socket.emit('promote', gameId, socket.id, type, (response: any) => {
       console.log(response);
